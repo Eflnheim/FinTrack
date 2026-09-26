@@ -7,6 +7,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Budget extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'category_id',
+        'amount',
+        'month',
+        'year',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

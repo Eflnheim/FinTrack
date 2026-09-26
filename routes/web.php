@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\BudgetController;
 
 Route::inertia('/', 'welcome')->name('home');
 
@@ -22,7 +23,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('accounts/{account}', [AccountController::class, 'update'])
         ->name('accounts.update');
     Route::delete('accounts/{account}', [AccountController::class, 'destroy'])
-        ->name('accounts.destroy'); 
+        ->name('accounts.destroy');
     Route::get('categories', [CategoryController::class, 'index'])
         ->name('categories.index');
     Route::get('categories/create', [CategoryController::class, 'create'])
@@ -34,7 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('categories/{category}', [CategoryController::class, 'update'])
         ->name('categories.update');
     Route::delete('categories/{category}', [CategoryController::class, 'destroy'])
-        ->name('categories.destroy');    
+        ->name('categories.destroy');
     Route::get('transactions', [TransactionController::class, 'index'])
         ->name('transactions.index');
     Route::get('transactions/create', [TransactionController::class, 'create'])
@@ -47,6 +48,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('transactions.update');
     Route::delete('transactions/{transaction}', [TransactionController::class, 'destroy'])
         ->name('transactions.destroy');
+    Route::get('budgets', [BudgetController::class, 'index'])
+        ->name('budgets.index');
+    Route::get('budgets/create', [BudgetController::class, 'create'])
+        ->name('budgets.create');
+    Route::post('budgets', [BudgetController::class, 'store'])
+        ->name('budgets.store');
+    Route::get('budgets/{budget}/edit', [BudgetController::class, 'edit'])
+        ->name('budgets.edit');
+    Route::put('budgets/{budget}', [BudgetController::class, 'update'])
+        ->name('budgets.update');
+    Route::delete('budgets/{budget}', [BudgetController::class, 'destroy'])
+        ->name('budgets.destroy');        
 });
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';
