@@ -15,6 +15,10 @@ class Account extends Model
         'initial_balance',
     ];
 
+    protected $appends = [
+        'current_balance',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -23,5 +27,18 @@ class Account extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function getCurrentBalanceAttribute(): float
+    {
+        $income = $this->transactions()
+            ->where('type', 'income')
+            ->sum('amount');
+
+        $expenses = $this->transactions()
+            ->where('type', 'expense')
+            ->sum('amount');
+
+        return (float) $this->initial_balance + $income - $expenses;
     }
 }

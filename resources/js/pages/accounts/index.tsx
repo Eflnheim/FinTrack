@@ -32,7 +32,8 @@ interface Account {
     id: number;
     name: string;
     type: string;
-    initial_balance: string;
+    initial_balance: number | string;
+    current_balance: number;
 }
 
 interface Props {
@@ -150,16 +151,25 @@ export default function Index({ accounts }: Props) {
                                 </CardHeader>
 
                                 <CardContent>
-                                    <p className="text-sm text-muted-foreground">
-                                        Initial Balance
-                                    </p>
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">
+                                            Current Balance
+                                        </p>
 
-                                    <p className="mt-1 text-2xl font-semibold">
-                                        Rp{' '}
-                                        {Number(
-                                            account.initial_balance,
-                                        ).toLocaleString('id-ID')}
-                                    </p>
+                                        <p className="mt-1 text-2xl font-semibold">
+                                            Rp{' '}
+                                            {Number(
+                                                account.current_balance,
+                                            ).toLocaleString('id-ID')}
+                                        </p>
+
+                                        <p className="mt-2 text-xs text-muted-foreground">
+                                            Initial balance: Rp{' '}
+                                            {Number(
+                                                account.initial_balance,
+                                            ).toLocaleString('id-ID')}
+                                        </p>
+                                    </div>
 
                                     <div className="mt-4 flex gap-2">
                                         <Button

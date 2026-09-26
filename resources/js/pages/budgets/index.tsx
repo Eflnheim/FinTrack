@@ -30,6 +30,9 @@ interface Budget {
     id: number;
     category_id: number;
     amount: number | string;
+    spent_amount: number;
+    remaining_amount: number;
+    percentage_used: number;
     month: number;
     year: number;
     category: Category;
@@ -60,6 +63,10 @@ const formatCurrency = (amount: number | string) => {
         currency: 'IDR',
         maximumFractionDigits: 0,
     }).format(Number(amount));
+};
+
+const getProgressWidth = (percentage: number) => {
+    return Math.min(percentage, 100);
 };
 
 export default function Index({ budgets }: Props) {
@@ -132,7 +139,15 @@ export default function Index({ budgets }: Props) {
                                             </th>
 
                                             <th className="px-4 py-3 font-medium">
-                                                Amount
+                                                Budget
+                                            </th>
+
+                                            <th className="px-4 py-3 font-medium">
+                                                Spent
+                                            </th>
+
+                                            <th className="px-4 py-3 font-medium">
+                                                Remaining
                                             </th>
 
                                             <th className="px-4 py-3 text-right font-medium">
@@ -159,9 +174,54 @@ export default function Index({ budgets }: Props) {
                                                 </td>
 
                                                 <td className="px-4 py-4 font-medium">
-                                                    {formatCurrency(
-                                                        budget.amount,
-                                                    )}
+                                                    {formatCurrency(budget.amount)}
+                                                </td>
+
+                                                <td className="px-4 py-4">
+                                                    <div>
+                                                        <p className="font-medium">
+                                                            {formatCurrency(budget.spent_amount)}
+                                                        </p>
+
+                                                        <div className="mt-2 h-2 w-full min-w-32 overflow-hidden rounded-full bg-muted">
+                                                            <div
+                                                                className={`h-full rounded-full transition-all ${budget.percentage_used > 100
+                                                                        ? 'bg-destructive'
+                                                                        : 'bg-primary'
+                                                                    }`}
+                                                                style={{
+                                                                    width: `${getProgressWidth(
+                                                                        budget.percentage_used,
+                                                                    )}%`,
+                                                                }}
+                                                            />
+                                                        </div>
+
+                                                        <p className="mt-1 text-xs text-muted-foreground">
+                                                            {budget.percentage_used.toLocaleString('id-ID', {
+                                                                maximumFractionDigits: 1,
+                                                            })}
+                                                            % used
+                                                        </p>
+
+                                                        {budget.remaining_amount < 0 && (
+                                                            <p className="mt-1 text-xs text-destructive">
+                                                                Over budget by{' '}
+                                                                {formatCurrency(
+                                                                    Math.abs(budget.remaining_amount),
+                                                                )}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </td>
+
+                                                <td
+                                                    className={`px-4 py-4 font-medium ${budget.remaining_amount < 0
+                                                        ? 'text-destructive'
+                                                        : ''
+                                                        }`}
+                                                >
+                                                    {formatCurrency(budget.remaining_amount)}
                                                 </td>
 
                                                 <td className="px-4 py-4">
