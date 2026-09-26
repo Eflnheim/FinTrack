@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TransactionController;
 
 Route::inertia('/', 'welcome')->name('home');
 
@@ -34,7 +35,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('categories.update');
     Route::delete('categories/{category}', [CategoryController::class, 'destroy'])
         ->name('categories.destroy');    
-    
+    Route::get('transactions', [TransactionController::class, 'index'])
+        ->name('transactions.index');
+    Route::get('transactions/create', [TransactionController::class, 'create'])
+        ->name('transactions.create');
+    Route::post('transactions', [TransactionController::class, 'store'])
+        ->name('transactions.store');
+    Route::get('transactions/{transaction}/edit', [TransactionController::class, 'edit'])
+        ->name('transactions.edit');
+    Route::put('transactions/{transaction}', [TransactionController::class, 'update'])
+        ->name('transactions.update');
+    Route::delete('transactions/{transaction}', [TransactionController::class, 'destroy'])
+        ->name('transactions.destroy');
 });
 
 require __DIR__.'/settings.php';
