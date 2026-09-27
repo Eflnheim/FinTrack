@@ -1,5 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link, useForm } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -29,21 +28,18 @@ interface Props {
 }
 
 export default function Create({ categories }: Props) {
-    const [categoryId, setCategoryId] = useState('');
-    const [amount, setAmount] = useState('');
-    const [month, setMonth] = useState('');
-    const [year, setYear] = useState('');
+    const { data, setData, post, processing, errors } = useForm({
+        category_id: '',
+        amount: '',
+        month: '',
+        year: '',
+    });
 
     const submit = (event: React.FormEvent) => {
         event.preventDefault();
 
-        router.post('/budgets', {
-            category_id: categoryId,
-            amount,
-            month,
-            year,
-        });
-    }
+        post('/budgets');
+    };
 
     return (
         <>
@@ -61,8 +57,8 @@ export default function Create({ categories }: Props) {
                                 <Label>Category</Label>
 
                                 <Select
-                                    value={categoryId}
-                                    onValueChange={setCategoryId}
+                                    value={data.category_id}
+                                    onValueChange={(value) => setData('category_id', value)}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select expense category" />
@@ -79,6 +75,12 @@ export default function Create({ categories }: Props) {
                                         ))}
                                     </SelectContent>
                                 </Select>
+
+                                {errors.category_id && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.category_id}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
@@ -90,11 +92,17 @@ export default function Create({ categories }: Props) {
                                     min="0.01"
                                     step="0.01"
                                     placeholder="0"
-                                    value={amount}
+                                    value={data.amount}
                                     onChange={(e) =>
-                                        setAmount(e.target.value)
+                                        setData('amount', e.target.value)
                                     }
                                 />
+
+                                {errors.amount && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.amount}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="grid gap-6 sm:grid-cols-2">
@@ -107,11 +115,17 @@ export default function Create({ categories }: Props) {
                                         min="1"
                                         max="12"
                                         placeholder="1 - 12"
-                                        value={month}
+                                        value={data.month}
                                         onChange={(e) =>
-                                            setMonth(e.target.value)
+                                            setData('month', e.target.value)
                                         }
                                     />
+
+                                    {errors.month && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.month}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">
@@ -123,11 +137,17 @@ export default function Create({ categories }: Props) {
                                         min="2000"
                                         max="2100"
                                         placeholder="2026"
-                                        value={year}
+                                        value={data.year}
                                         onChange={(e) =>
-                                            setYear(e.target.value)
+                                            setData('year', e.target.value)
                                         }
                                     />
+
+                                    {errors.year && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.year}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
@@ -136,8 +156,8 @@ export default function Create({ categories }: Props) {
                                     <Link href="/budgets">Cancel</Link>
                                 </Button>
 
-                                <Button type="submit">
-                                    Create Budget
+                                <Button type="submit" disabled={processing}>
+                                    {processing ? 'Creating...' : 'Create Budget'}
                                 </Button>
                             </div>
                         </form>

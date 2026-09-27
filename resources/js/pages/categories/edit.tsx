@@ -1,6 +1,5 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
-import { FormEvent, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -30,16 +29,15 @@ interface Props {
 }
 
 export default function Edit({ category }: Props) {
-    const [name, setName] = useState(category.name);
-    const [type, setType] = useState(category.type);
+    const { data, setData, put, processing, errors } = useForm({
+        name: category.name,
+        type: category.type,
+    });
 
-    function submit(event: FormEvent) {
+    function submit(event: React.FormEvent) {
         event.preventDefault();
 
-        router.put(`/categories/${category.id}`, {
-            name,
-            type,
-        });
+        put(`/categories/${category.id}`);
     }
 
     return (
@@ -85,11 +83,16 @@ export default function Edit({ category }: Props) {
 
                                 <Input
                                     id="name"
-                                    value={name}
+                                    value={data.name}
                                     onChange={(event) =>
-                                        setName(event.target.value)
+                                        setData('name', event.target.value)
                                     }
                                 />
+                                {errors.name && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Type */}
@@ -99,8 +102,8 @@ export default function Edit({ category }: Props) {
                                 </Label>
 
                                 <Select
-                                    value={type}
-                                    onValueChange={setType}
+                                    value={data.type}
+                                    onValueChange={(value) => setData('type', value)}
                                 >
                                     <SelectTrigger id="type">
                                         <SelectValue />
@@ -116,6 +119,11 @@ export default function Edit({ category }: Props) {
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
+                                {errors.type && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.type}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Actions */}
@@ -130,8 +138,8 @@ export default function Edit({ category }: Props) {
                                     </Link>
                                 </Button>
 
-                                <Button type="submit">
-                                    Save Changes
+                                <Button type="submit" disabled={processing}>
+                                    {processing ? 'Saving...' : 'Save Changes'}
                                 </Button>
                             </div>
                         </form>

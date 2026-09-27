@@ -1,5 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link, useForm } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -51,40 +50,29 @@ export default function EditTransaction({
     accounts,
     categories,
 }: Props) {
-    const [type, setType] = useState<'income' | 'expense'>(
-        transaction.type,
-    );
-    const [accountId, setAccountId] = useState(
-        String(transaction.account_id),
-    );
-    const [categoryId, setCategoryId] = useState(
-        String(transaction.category_id),
-    );
-    const [amount, setAmount] = useState(
-        String(transaction.amount),
-    );
-    const [description, setDescription] = useState(
-        transaction.description ?? '',
-    );
-    const [transactionDate, setTransactionDate] = useState(
-        transaction.transaction_date,
-    );
+    const {
+        data,
+        setData,
+        put,
+        processing,
+        errors,
+    } = useForm({
+        type: transaction.type,
+        account_id: String(transaction.account_id),
+        category_id: String(transaction.category_id),
+        amount: String(transaction.amount),
+        description: transaction.description ?? '',
+        transaction_date: transaction.transaction_date,
+    });
 
     const filteredCategories = categories.filter(
-        (category) => category.type === type,
+        (category) => category.type === data.type,
     );
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        router.put(`/transactions/${transaction.id}`, {
-            account_id: accountId,
-            category_id: categoryId,
-            type,
-            amount,
-            description,
-            transaction_date: transactionDate,
-        });
+        put(`/transactions/${transaction.id}`);
     };
 
     return (
@@ -103,12 +91,10 @@ export default function EditTransaction({
                                 <Label>Type</Label>
 
                                 <Select
-                                    value={type}
+                                    value={data.type}
                                     onValueChange={(value) => {
-                                        setType(
-                                            value as 'income' | 'expense',
-                                        );
-                                        setCategoryId('');
+                                        setData('type', value as 'income' | 'expense');
+                                        setData('category_id', '');
                                     }}
                                 >
                                     <SelectTrigger>
@@ -131,8 +117,8 @@ export default function EditTransaction({
                                 <Label>Account</Label>
 
                                 <Select
-                                    value={accountId}
-                                    onValueChange={setAccountId}
+                                    value={data.account_id}
+                                    onValueChange={(value) => setData('account_id', value)}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select account" />
@@ -149,14 +135,19 @@ export default function EditTransaction({
                                         ))}
                                     </SelectContent>
                                 </Select>
+                                {errors.account_id && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.account_id}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
                                 <Label>Category</Label>
 
                                 <Select
-                                    value={categoryId}
-                                    onValueChange={setCategoryId}
+                                    value={data.category_id}
+                                    onValueChange={(value) => setData('category_id', value)}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select category" />
@@ -175,6 +166,11 @@ export default function EditTransaction({
                                         )}
                                     </SelectContent>
                                 </Select>
+                                {errors.category_id && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.category_id}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
@@ -185,11 +181,16 @@ export default function EditTransaction({
                                     type="number"
                                     min="0.01"
                                     step="0.01"
-                                    value={amount}
+                                    value={data.amount}
                                     onChange={(e) =>
-                                        setAmount(e.target.value)
+                                        setData('amount', e.target.value)
                                     }
                                 />
+                                {errors.amount && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.amount}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
@@ -200,11 +201,16 @@ export default function EditTransaction({
                                 <Input
                                     id="description"
                                     placeholder="Optional description"
-                                    value={description}
+                                    value={data.description}
                                     onChange={(e) =>
-                                        setDescription(e.target.value)
+                                        setData('description', e.target.value)
                                     }
                                 />
+                                {errors.description && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.description}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
@@ -215,16 +221,21 @@ export default function EditTransaction({
                                 <Input
                                     id="transaction_date"
                                     type="date"
-                                    value={transactionDate}
+                                    value={data.transaction_date}
                                     onChange={(e) =>
-                                        setTransactionDate(e.target.value)
+                                        setData('transaction_date', e.target.value)
                                     }
                                 />
+                                {errors.transaction_date && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.transaction_date}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="flex gap-3">
-                                <Button type="submit" className="flex-1">
-                                    Update Transaction
+                                <Button type="submit" className="flex-1" disabled={processing}>
+                                    {processing ? 'Saving...' : 'Save Changes'}
                                 </Button>
 
                                 <Button

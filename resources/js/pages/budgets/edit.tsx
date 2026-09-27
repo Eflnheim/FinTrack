@@ -1,5 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -37,31 +36,17 @@ interface Props {
 }
 
 export default function EditBudget({ budget, categories }: Props) {
-    const [categoryId, setCategoryId] = useState(
-        String(budget.category_id),
-    );
-
-    const [amount, setAmount] = useState(
-        String(budget.amount),
-    );
-
-    const [month, setMonth] = useState(
-        String(budget.month),
-    );
-
-    const [year, setYear] = useState(
-        String(budget.year),
-    );
+    const { data, setData, put,processing, errors } = useForm({
+        category_id: String(budget.category_id),
+        amount: String(budget.amount),
+        month: String(budget.month),
+        year: String(budget.year),
+    });
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        router.put(`/budgets/${budget.id}`, {
-            category_id: categoryId,
-            amount,
-            month,
-            year,
-        });
+        put(`/budgets/${budget.id}`);
     };
 
     return (
@@ -80,8 +65,8 @@ export default function EditBudget({ budget, categories }: Props) {
                                 <Label>Category</Label>
 
                                 <Select
-                                    value={categoryId}
-                                    onValueChange={setCategoryId}
+                                    value={data.category_id}
+                                    onValueChange={(value) => setData('category_id', value)}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select expense category" />
@@ -98,6 +83,11 @@ export default function EditBudget({ budget, categories }: Props) {
                                         ))}
                                     </SelectContent>
                                 </Select>
+                                {errors.category_id && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.category_id}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
@@ -110,11 +100,16 @@ export default function EditBudget({ budget, categories }: Props) {
                                     type="number"
                                     min="0.01"
                                     step="0.01"
-                                    value={amount}
+                                    value={data.amount}
                                     onChange={(e) =>
-                                        setAmount(e.target.value)
+                                        setData('amount', e.target.value)
                                     }
                                 />
+                                {errors.amount && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.amount}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="grid gap-6 sm:grid-cols-2">
@@ -128,11 +123,16 @@ export default function EditBudget({ budget, categories }: Props) {
                                         type="number"
                                         min="1"
                                         max="12"
-                                        value={month}
+                                        value={data.month}
                                         onChange={(e) =>
-                                            setMonth(e.target.value)
+                                            setData('month', e.target.value)
                                         }
                                     />
+                                    {errors.month && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.month}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">
@@ -145,11 +145,16 @@ export default function EditBudget({ budget, categories }: Props) {
                                         type="number"
                                         min="2000"
                                         max="2100"
-                                        value={year}
+                                        value={data.year}
                                         onChange={(e) =>
-                                            setYear(e.target.value)
+                                            setData('year', e.target.value)
                                         }
                                     />
+                                    {errors.year && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.year}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
@@ -160,8 +165,8 @@ export default function EditBudget({ budget, categories }: Props) {
                                     </Link>
                                 </Button>
 
-                                <Button type="submit">
-                                    Update Budget
+                                <Button type="submit" disabled={processing}>
+                                    {processing ? 'Saving...' : 'Save Changes'}
                                 </Button>
                             </div>
                         </form>

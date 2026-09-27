@@ -5,11 +5,13 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\DashboardController;
 
 Route::inertia('/', 'welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
     Route::get('accounts', [AccountController::class, 'index'])
         ->name('accounts.index');
     Route::get('accounts/create', [AccountController::class, 'create'])
@@ -59,7 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('budgets/{budget}', [BudgetController::class, 'update'])
         ->name('budgets.update');
     Route::delete('budgets/{budget}', [BudgetController::class, 'destroy'])
-        ->name('budgets.destroy');        
+        ->name('budgets.destroy');
 });
 
 require __DIR__ . '/settings.php';

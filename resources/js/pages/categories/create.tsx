@@ -1,6 +1,5 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
-import { FormEvent, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,16 +14,15 @@ import {
 } from '@/components/ui/select';
 
 export default function Create() {
-    const [name, setName] = useState('');
-    const [type, setType] = useState('');
+    const { data, setData, post, processing, errors } = useForm({
+        name: '',
+        type: '',
+    });
 
-    function submit(event: FormEvent) {
+    function submit(event: React.FormEvent) {
         event.preventDefault();
 
-        router.post('/categories', {
-            name,
-            type,
-        });
+        post('/categories');
     }
 
     return (
@@ -70,12 +68,17 @@ export default function Create() {
 
                                 <Input
                                     id="name"
-                                    value={name}
+                                    value={data.name}
                                     onChange={(event) =>
-                                        setName(event.target.value)
+                                        setData('name', event.target.value)
                                     }
                                     placeholder="e.g. Food"
                                 />
+                                {errors.name && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Type */}
@@ -85,8 +88,8 @@ export default function Create() {
                                 </Label>
 
                                 <Select
-                                    value={type}
-                                    onValueChange={setType}
+                                    value={data.type}
+                                    onValueChange={(value) => setData('type', value)}
                                 >
                                     <SelectTrigger id="type">
                                         <SelectValue placeholder="Select category type" />
@@ -102,6 +105,11 @@ export default function Create() {
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
+                                {errors.type && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.type}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Actions */}
@@ -116,8 +124,8 @@ export default function Create() {
                                     </Link>
                                 </Button>
 
-                                <Button type="submit">
-                                    Create Category
+                                <Button type="submit" disabled={processing}>
+                                    {processing ? 'Creating...' : 'Create Category'}
                                 </Button>
                             </div>
                         </form>
