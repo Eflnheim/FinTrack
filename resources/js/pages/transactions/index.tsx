@@ -1,14 +1,10 @@
-import { Head, Link, router } from "@inertiajs/react";
-import { useState } from "react";
+import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Pencil, Trash2, Receipt } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -29,14 +25,14 @@ interface Account {
 interface Category {
     id: number;
     name: string;
-    type: "income" | "expense";
+    type: 'income' | 'expense';
 }
 
 interface Transaction {
     id: number;
     account_id: number;
     category_id: number;
-    type: "income" | "expense";
+    type: 'income' | 'expense';
     amount: number | string;
     description: string | null;
     transaction_date: string;
@@ -52,17 +48,22 @@ export default function TransactionsIndex({ transactions }: Props) {
     const [transactionToDelete, setTransactionToDelete] =
         useState<Transaction | null>(null);
 
+    const [deleting, setDeleting] = useState(false);
+
     const deleteTransaction = () => {
         if (!transactionToDelete) {
             return;
         }
 
-        router.delete('/transactions/' + transactionToDelete.id, {
-            onSuccess: () => {
+        setDeleting(true);
+
+        router.delete(`/transactions/${transactionToDelete.id}`, {
+            onFinish: () => {
+                setDeleting(false);
                 setTransactionToDelete(null);
             },
         });
-    }
+    };
 
     const formatCurrency = (amount: number | string) => {
         return new Intl.NumberFormat('id-ID', {
@@ -89,9 +90,7 @@ export default function TransactionsIndex({ transactions }: Props) {
                     </div>
 
                     <Button asChild>
-                        <Link href="/transactions/create">
-                            Add Transaction
-                        </Link>
+                        <Link href="/transactions/create">Add Transaction</Link>
                     </Button>
                 </div>
 
@@ -102,15 +101,25 @@ export default function TransactionsIndex({ transactions }: Props) {
 
                     <CardContent>
                         <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
+                            <table className="w-full min-w-[900px] text-sm">
                                 <thead>
                                     <tr className="border-b text-left">
-                                        <th className="px-4 py-3 font-medium">Date</th>
-                                        <th className="px-4 py-3 font-medium">Description</th>
-                                        <th className="px-4 py-3 font-medium">Category</th>
-                                        <th className="px-4 py-3 font-medium">Account</th>
-                                        <th className="px-4 py-3 font-medium">Type</th>
-                                        <th className="px-4 py-3 text-right font-medium">
+                                        <th className="px-4 py-3 font-medium whitespace-nowrap">
+                                            Date
+                                        </th>
+                                        <th className="px-4 py-3 font-medium">
+                                            Description
+                                        </th>
+                                        <th className="px-4 py-3 font-medium whitespace-nowrap">
+                                            Category
+                                        </th>
+                                        <th className="px-4 py-3 font-medium whitespace-nowrap">
+                                            Account
+                                        </th>
+                                        <th className="px-4 py-3 font-medium whitespace-nowrap">
+                                            Type
+                                        </th>
+                                        <th className="px-4 py-3 text-right font-medium whitespace-nowrap">
                                             Amount
                                         </th>
                                         <th className="px-4 py-3 text-right font-medium">
@@ -122,11 +131,32 @@ export default function TransactionsIndex({ transactions }: Props) {
                                 <tbody>
                                     {transactions.length === 0 ? (
                                         <tr>
-                                            <td
-                                                colSpan={7}
-                                                className="px-4 py-12 text-center text-muted-foreground"
-                                            >
-                                                No transactions yet.
+                                            <td colSpan={7}>
+                                                <div className="flex flex-col items-center justify-center px-4 py-16 text-center">
+                                                    <div className="flex size-14 items-center justify-center rounded-full bg-muted">
+                                                        <Receipt className="size-7 text-muted-foreground" />
+                                                    </div>
+
+                                                    <h2 className="mt-5 text-lg font-semibold">
+                                                        No transactions yet
+                                                    </h2>
+
+                                                    <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                                                        Add your first income or
+                                                        expense to start
+                                                        tracking your financial
+                                                        activity.
+                                                    </p>
+
+                                                    <Button
+                                                        asChild
+                                                        className="mt-5"
+                                                    >
+                                                        <Link href="/transactions/create">
+                                                            Add Transaction
+                                                        </Link>
+                                                    </Button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ) : (
@@ -135,12 +165,26 @@ export default function TransactionsIndex({ transactions }: Props) {
                                                 key={transaction.id}
                                                 className="border-b last:border-0"
                                             >
-                                                <td className="px-4 py-4">
-                                                    {transaction.transaction_date}
+                                                <td className="px-4 py-4 whitespace-nowrap">
+                                                    <span className="font-medium">
+                                                        {new Date(
+                                                            transaction.transaction_date,
+                                                        ).toLocaleDateString(
+                                                            'id-ID',
+                                                            {
+                                                                day: '2-digit',
+                                                                month: 'short',
+                                                                year: 'numeric',
+                                                            },
+                                                        )}
+                                                    </span>
                                                 </td>
 
-                                                <td className="px-4 py-4">
-                                                    {transaction.description || '—'}
+                                                <td className="max-w-[240px] px-4 py-4">
+                                                    <p className="truncate font-medium">
+                                                        {transaction.description ||
+                                                            'No description'}
+                                                    </p>
                                                 </td>
 
                                                 <td className="px-4 py-4">
@@ -154,49 +198,71 @@ export default function TransactionsIndex({ transactions }: Props) {
                                                 <td className="px-4 py-4">
                                                     <Badge
                                                         variant={
-                                                            transaction.type === 'income'
+                                                            transaction.type ===
+                                                            'income'
                                                                 ? 'default'
                                                                 : 'secondary'
                                                         }
                                                     >
-                                                        {transaction.type === 'income'
+                                                        {transaction.type ===
+                                                        'income'
                                                             ? 'Income'
                                                             : 'Expense'}
                                                     </Badge>
                                                 </td>
 
                                                 <td
-                                                    className={`px-4 py-4 text-right font-medium ${transaction.type === 'income'
-                                                        ? 'text-green-600'
-                                                        : 'text-red-600'
-                                                        }`}
+                                                    className={`px-4 py-4 text-right ${
+                                                        transaction.type ===
+                                                        'income'
+                                                            ? 'text-green-600'
+                                                            : 'text-red-600'
+                                                    }`}
                                                 >
-                                                    {transaction.type === 'income' ? '+' : '-'}
-                                                    {formatCurrency(transaction.amount)}
+                                                    <div className="font-semibold">
+                                                        {transaction.type ===
+                                                        'income'
+                                                            ? '+'
+                                                            : '-'}
+                                                        {formatCurrency(
+                                                            transaction.amount,
+                                                        )}
+                                                    </div>
+
+                                                    <div className="text-xs text-muted-foreground">
+                                                        {transaction.type ===
+                                                        'income'
+                                                            ? 'Money in'
+                                                            : 'Money out'}
+                                                    </div>
                                                 </td>
 
                                                 <td className="px-4 py-4 text-right">
                                                     <div className="flex justify-end gap-2">
                                                         <Button
                                                             variant="outline"
-                                                            size="sm"
+                                                            size="icon"
                                                             asChild
+                                                            aria-label="Edit transaction"
                                                         >
                                                             <Link
                                                                 href={`/transactions/${transaction.id}/edit`}
                                                             >
-                                                                Edit
+                                                                <Pencil />
                                                             </Link>
                                                         </Button>
 
                                                         <Button
-                                                            variant="destructive"
-                                                            size="sm"
+                                                            variant="outline"
+                                                            size="icon"
                                                             onClick={() =>
-                                                                setTransactionToDelete(transaction)
+                                                                setTransactionToDelete(
+                                                                    transaction,
+                                                                )
                                                             }
+                                                            aria-label="Delete transaction"
                                                         >
-                                                            Delete
+                                                            <Trash2 />
                                                         </Button>
                                                     </div>
                                                 </td>
@@ -220,29 +286,26 @@ export default function TransactionsIndex({ transactions }: Props) {
             >
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Delete transaction?
-                        </AlertDialogTitle>
+                        <AlertDialogTitle>Delete transaction?</AlertDialogTitle>
 
                         <AlertDialogDescription>
-                            This will permanently delete this transaction.
-                            This action cannot be undone.
+                            This will permanently delete this transaction. This
+                            action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
 
                     <AlertDialogFooter>
-                        <AlertDialogCancel>
-                            Cancel
-                        </AlertDialogCancel>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
 
                         <AlertDialogAction
                             onClick={deleteTransaction}
+                            disabled={deleting}
                         >
-                            Delete
+                            {deleting ? 'Deleting...' : 'Delete'}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
         </>
     );
-}    
+}

@@ -1,12 +1,7 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -50,13 +45,7 @@ export default function EditTransaction({
     accounts,
     categories,
 }: Props) {
-    const {
-        data,
-        setData,
-        put,
-        processing,
-        errors,
-    } = useForm({
+    const { data, setData, put, processing, errors } = useForm({
         type: transaction.type,
         account_id: String(transaction.account_id),
         category_id: String(transaction.category_id),
@@ -93,7 +82,10 @@ export default function EditTransaction({
                                 <Select
                                     value={data.type}
                                     onValueChange={(value) => {
-                                        setData('type', value as 'income' | 'expense');
+                                        setData(
+                                            'type',
+                                            value as 'income' | 'expense',
+                                        );
                                         setData('category_id', '');
                                     }}
                                 >
@@ -118,7 +110,9 @@ export default function EditTransaction({
 
                                 <Select
                                     value={data.account_id}
-                                    onValueChange={(value) => setData('account_id', value)}
+                                    onValueChange={(value) =>
+                                        setData('account_id', value)
+                                    }
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select account" />
@@ -147,23 +141,23 @@ export default function EditTransaction({
 
                                 <Select
                                     value={data.category_id}
-                                    onValueChange={(value) => setData('category_id', value)}
+                                    onValueChange={(value) =>
+                                        setData('category_id', value)
+                                    }
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select category" />
                                     </SelectTrigger>
 
                                     <SelectContent>
-                                        {filteredCategories.map(
-                                            (category) => (
-                                                <SelectItem
-                                                    key={category.id}
-                                                    value={String(category.id)}
-                                                >
-                                                    {category.name}
-                                                </SelectItem>
-                                            ),
-                                        )}
+                                        {filteredCategories.map((category) => (
+                                            <SelectItem
+                                                key={category.id}
+                                                value={String(category.id)}
+                                            >
+                                                {category.name}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                                 {errors.category_id && (
@@ -194,9 +188,7 @@ export default function EditTransaction({
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="description">
-                                    Description
-                                </Label>
+                                <Label htmlFor="description">Description</Label>
 
                                 <Input
                                     id="description"
@@ -214,16 +206,17 @@ export default function EditTransaction({
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="transaction_date">
-                                    Date
-                                </Label>
+                                <Label htmlFor="transaction_date">Date</Label>
 
                                 <Input
                                     id="transaction_date"
                                     type="date"
                                     value={data.transaction_date}
                                     onChange={(e) =>
-                                        setData('transaction_date', e.target.value)
+                                        setData(
+                                            'transaction_date',
+                                            e.target.value,
+                                        )
                                     }
                                 />
                                 {errors.transaction_date && (
@@ -234,18 +227,16 @@ export default function EditTransaction({
                             </div>
 
                             <div className="flex gap-3">
-                                <Button type="submit" className="flex-1" disabled={processing}>
+                                <Button
+                                    type="submit"
+                                    className="flex-1"
+                                    disabled={processing}
+                                >
                                     {processing ? 'Saving...' : 'Save Changes'}
                                 </Button>
 
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    asChild
-                                >
-                                    <Link href="/transactions">
-                                        Cancel
-                                    </Link>
+                                <Button type="button" variant="outline" asChild>
+                                    <Link href="/transactions">Cancel</Link>
                                 </Button>
                             </div>
                         </form>

@@ -35,9 +35,7 @@ export default function Create() {
                     <Button variant="ghost" size="icon" asChild>
                         <Link href="/categories">
                             <ArrowLeft />
-                            <span className="sr-only">
-                                Back to categories
-                            </span>
+                            <span className="sr-only">Back to categories</span>
                         </Link>
                     </Button>
 
@@ -62,9 +60,7 @@ export default function Create() {
                         <form onSubmit={submit} className="space-y-6">
                             {/* Name */}
                             <div className="space-y-2">
-                                <Label htmlFor="name">
-                                    Category Name
-                                </Label>
+                                <Label htmlFor="name">Category Name</Label>
 
                                 <Input
                                     id="name"
@@ -83,13 +79,13 @@ export default function Create() {
 
                             {/* Type */}
                             <div className="space-y-2">
-                                <Label htmlFor="type">
-                                    Type
-                                </Label>
+                                <Label htmlFor="type">Type</Label>
 
                                 <Select
                                     value={data.type}
-                                    onValueChange={(value) => setData('type', value)}
+                                    onValueChange={(value) =>
+                                        setData('type', value)
+                                    }
                                 >
                                     <SelectTrigger id="type">
                                         <SelectValue placeholder="Select category type" />
@@ -114,18 +110,14 @@ export default function Create() {
 
                             {/* Actions */}
                             <div className="flex justify-end gap-3">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    asChild
-                                >
-                                    <Link href="/categories">
-                                        Cancel
-                                    </Link>
+                                <Button type="button" variant="outline" asChild>
+                                    <Link href="/categories">Cancel</Link>
                                 </Button>
 
                                 <Button type="submit" disabled={processing}>
-                                    {processing ? 'Creating...' : 'Create Category'}
+                                    {processing
+                                        ? 'Creating...'
+                                        : 'Create Category'}
                                 </Button>
                             </div>
                         </form>

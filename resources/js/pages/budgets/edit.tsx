@@ -1,12 +1,7 @@
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -36,7 +31,7 @@ interface Props {
 }
 
 export default function EditBudget({ budget, categories }: Props) {
-    const { data, setData, put,processing, errors } = useForm({
+    const { data, setData, put, processing, errors } = useForm({
         category_id: String(budget.category_id),
         amount: String(budget.amount),
         month: String(budget.month),
@@ -66,7 +61,9 @@ export default function EditBudget({ budget, categories }: Props) {
 
                                 <Select
                                     value={data.category_id}
-                                    onValueChange={(value) => setData('category_id', value)}
+                                    onValueChange={(value) =>
+                                        setData('category_id', value)
+                                    }
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select expense category" />
@@ -91,9 +88,7 @@ export default function EditBudget({ budget, categories }: Props) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="amount">
-                                    Budget Amount
-                                </Label>
+                                <Label htmlFor="amount">Budget Amount</Label>
 
                                 <Input
                                     id="amount"
@@ -114,9 +109,7 @@ export default function EditBudget({ budget, categories }: Props) {
 
                             <div className="grid gap-6 sm:grid-cols-2">
                                 <div className="space-y-2">
-                                    <Label htmlFor="month">
-                                        Month
-                                    </Label>
+                                    <Label htmlFor="month">Month</Label>
 
                                     <Input
                                         id="month"
@@ -136,9 +129,7 @@ export default function EditBudget({ budget, categories }: Props) {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="year">
-                                        Year
-                                    </Label>
+                                    <Label htmlFor="year">Year</Label>
 
                                     <Input
                                         id="year"
@@ -160,9 +151,7 @@ export default function EditBudget({ budget, categories }: Props) {
 
                             <div className="flex justify-end gap-3">
                                 <Button variant="outline" asChild>
-                                    <Link href="/budgets">
-                                        Cancel
-                                    </Link>
+                                    <Link href="/budgets">Cancel</Link>
                                 </Button>
 
                                 <Button type="submit" disabled={processing}>

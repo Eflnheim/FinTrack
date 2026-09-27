@@ -31,7 +31,7 @@ const mainNavItems: NavItem[] = [
         title: 'Categories',
         href: '/categories',
         icon: FolderGit2,
-    }
+    },
 ];
 
 const footerNavItems: NavItem[] = [

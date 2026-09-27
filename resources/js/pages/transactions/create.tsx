@@ -1,12 +1,7 @@
 import { Head, useForm } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -35,13 +30,7 @@ interface Props {
 }
 
 export default function Create({ accounts, categories }: Props) {
-    const {
-        data,
-        setData,
-        post,
-        processing,
-        errors,
-    } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         type: 'expense' as 'income' | 'expense',
         account_id: '',
         category_id: '',
@@ -78,7 +67,10 @@ export default function Create({ accounts, categories }: Props) {
                                 <Select
                                     value={data.type}
                                     onValueChange={(value) => {
-                                        setData('type', value as 'income' | 'expense');
+                                        setData(
+                                            'type',
+                                            value as 'income' | 'expense',
+                                        );
                                         setData('category_id', '');
                                     }}
                                 >
@@ -87,8 +79,12 @@ export default function Create({ accounts, categories }: Props) {
                                     </SelectTrigger>
 
                                     <SelectContent>
-                                        <SelectItem value="expense">Expense</SelectItem>
-                                        <SelectItem value="income">Income</SelectItem>
+                                        <SelectItem value="expense">
+                                            Expense
+                                        </SelectItem>
+                                        <SelectItem value="income">
+                                            Income
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -98,7 +94,10 @@ export default function Create({ accounts, categories }: Props) {
 
                                 <Select
                                     value={data.account_id}
-                                    onValueChange={(value) => setData('account_id', value)}>
+                                    onValueChange={(value) =>
+                                        setData('account_id', value)
+                                    }
+                                >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select account" />
                                     </SelectTrigger>
@@ -126,7 +125,10 @@ export default function Create({ accounts, categories }: Props) {
 
                                 <Select
                                     value={data.category_id}
-                                    onValueChange={(value) => setData('category_id', value)}>
+                                    onValueChange={(value) =>
+                                        setData('category_id', value)
+                                    }
+                                >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select category" />
                                     </SelectTrigger>
@@ -159,7 +161,9 @@ export default function Create({ accounts, categories }: Props) {
                                     step="0.01"
                                     placeholder="0"
                                     value={data.amount}
-                                    onChange={(e) => setData('amount', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('amount', e.target.value)
+                                    }
                                 />
                                 {errors.amount && (
                                     <p className="text-sm text-destructive">
@@ -175,7 +179,9 @@ export default function Create({ accounts, categories }: Props) {
                                     id="description"
                                     placeholder="Optional description"
                                     value={data.description}
-                                    onChange={(e) => setData('description', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('description', e.target.value)
+                                    }
                                 />
                                 {errors.description && (
                                     <p className="text-sm text-destructive">
@@ -191,7 +197,12 @@ export default function Create({ accounts, categories }: Props) {
                                     id="transaction_date"
                                     type="date"
                                     value={data.transaction_date}
-                                    onChange={(e) => setData('transaction_date', e.target.value)}
+                                    onChange={(e) =>
+                                        setData(
+                                            'transaction_date',
+                                            e.target.value,
+                                        )
+                                    }
                                 />
                                 {errors.transaction_date && (
                                     <p className="text-sm text-destructive">
@@ -200,8 +211,14 @@ export default function Create({ accounts, categories }: Props) {
                                 )}
                             </div>
 
-                            <Button type="submit" className="w-full" disabled={processing}>
-                                {processing ? 'Creating...' : 'Create Transaction'}
+                            <Button
+                                type="submit"
+                                className="w-full"
+                                disabled={processing}
+                            >
+                                {processing
+                                    ? 'Creating...'
+                                    : 'Create Transaction'}
                             </Button>
                         </form>
                     </CardContent>

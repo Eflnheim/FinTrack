@@ -2,13 +2,15 @@ import { Head, Link } from '@inertiajs/react';
 
 import { dashboard } from '@/routes';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-
 import {
-    ArrowDownRight,
-    ArrowUpRight,
-    Wallet,
-} from 'lucide-react';
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+
+import { ArrowDownRight, ArrowUpRight, Wallet } from 'lucide-react';
 
 interface Transaction {
     id: number;
@@ -18,10 +20,10 @@ interface Transaction {
     transaction_date: string;
     account: {
         name: string;
-    },
+    };
     category: {
         name: string;
-    }
+    };
 }
 
 interface Budget {
@@ -45,7 +47,6 @@ interface Props {
     recentTransactions: Transaction[];
 }
 
-
 export default function Dashboard({
     totalBalance,
     monthlyIncome,
@@ -53,7 +54,6 @@ export default function Dashboard({
     recentTransactions,
     budgets,
 }: Props) {
-
     const netCashFlow = monthlyIncome - monthlyExpenses;
 
     return (
@@ -158,10 +158,11 @@ export default function Dashboard({
 
                         <CardContent>
                             <p
-                                className={`text-2xl font-semibold ${netCashFlow >= 0
-                                    ? 'text-green-600'
-                                    : 'text-destructive'
-                                    }`}
+                                className={`text-2xl font-semibold ${
+                                    netCashFlow >= 0
+                                        ? 'text-green-600'
+                                        : 'text-destructive'
+                                }`}
                             >
                                 {new Intl.NumberFormat('id-ID', {
                                     style: 'currency',
@@ -215,26 +216,34 @@ export default function Dashboard({
 
                                                 <p className="truncate text-sm text-muted-foreground">
                                                     {transaction.description ||
-                                                        transaction.account.name}
+                                                        transaction.account
+                                                            .name}
                                                 </p>
 
                                                 <p className="text-xs text-muted-foreground">
                                                     {new Date(
                                                         transaction.transaction_date,
-                                                    ).toLocaleDateString('id-ID')}
+                                                    ).toLocaleDateString(
+                                                        'id-ID',
+                                                    )}
                                                 </p>
                                             </div>
 
                                             <p
-                                                className={`shrink-0 font-semibold ${transaction.type === 'income'
-                                                    ? 'text-green-600'
-                                                    : 'text-destructive'
-                                                    }`}
+                                                className={`shrink-0 font-semibold ${
+                                                    transaction.type ===
+                                                    'income'
+                                                        ? 'text-green-600'
+                                                        : 'text-destructive'
+                                                }`}
                                             >
-                                                {transaction.type === 'income' ? '+' : '-'} Rp{' '}
-                                                {Number(transaction.amount).toLocaleString(
-                                                    'id-ID',
-                                                )}
+                                                {transaction.type === 'income'
+                                                    ? '+'
+                                                    : '-'}{' '}
+                                                Rp{' '}
+                                                {Number(
+                                                    transaction.amount,
+                                                ).toLocaleString('id-ID')}
                                             </p>
                                         </div>
                                     ))}
@@ -295,10 +304,12 @@ export default function Dashboard({
 
                                                 <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
                                                     <div
-                                                        className={`h-full rounded-full transition-all ${budget.percentage_used > 100
-                                                            ? 'bg-destructive'
-                                                            : 'bg-primary'
-                                                            }`}
+                                                        className={`h-full rounded-full transition-all ${
+                                                            budget.percentage_used >
+                                                            100
+                                                                ? 'bg-destructive'
+                                                                : 'bg-primary'
+                                                        }`}
                                                         style={{
                                                             width: `${progressWidth}%`,
                                                         }}
@@ -310,14 +321,18 @@ export default function Dashboard({
                                                         Rp{' '}
                                                         {Number(
                                                             budget.spent_amount,
-                                                        ).toLocaleString('id-ID')}
+                                                        ).toLocaleString(
+                                                            'id-ID',
+                                                        )}
                                                     </span>
 
                                                     <span className="text-muted-foreground">
                                                         of Rp{' '}
                                                         {Number(
                                                             budget.amount,
-                                                        ).toLocaleString('id-ID')}
+                                                        ).toLocaleString(
+                                                            'id-ID',
+                                                        )}
                                                     </span>
                                                 </div>
 
@@ -326,14 +341,18 @@ export default function Dashboard({
                                                         Over budget by Rp{' '}
                                                         {Math.abs(
                                                             budget.remaining_amount,
-                                                        ).toLocaleString('id-ID')}
+                                                        ).toLocaleString(
+                                                            'id-ID',
+                                                        )}
                                                     </p>
                                                 ) : (
                                                     <p className="mt-1 text-xs text-muted-foreground">
                                                         Rp{' '}
                                                         {Number(
                                                             budget.remaining_amount,
-                                                        ).toLocaleString('id-ID')}{' '}
+                                                        ).toLocaleString(
+                                                            'id-ID',
+                                                        )}{' '}
                                                         remaining
                                                     </p>
                                                 )}

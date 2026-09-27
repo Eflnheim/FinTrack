@@ -20,13 +20,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Badge } from '@/components/ui/badge';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Account {
     id: number;
@@ -67,16 +61,24 @@ function getAccountTypeLabel(type: string) {
 }
 
 export default function Index({ accounts }: Props) {
-    const [accountToDelete, setAccountToDelete] =
-        useState<Account | null>(null);
+    const [accountToDelete, setAccountToDelete] = useState<Account | null>(
+        null,
+    );
+
+    const [deleting, setDeleting] = useState(false);
 
     function deleteAccount() {
         if (!accountToDelete) {
             return;
         }
 
+        setDeleting(true);
+
         router.delete(`/accounts/${accountToDelete.id}`, {
-            onFinish: () => setAccountToDelete(null),
+            onFinish: () => {
+                setDeleting(false);
+                setAccountToDelete(null);
+            },
         });
     }
 
@@ -111,42 +113,24 @@ export default function Index({ accounts }: Props) {
                         {accounts.map((account) => (
                             <Card key={account.id}>
                                 <CardHeader>
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
-                                                {getAccountIcon(
-                                                    account.type,
-                                                )}
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div className="flex min-w-0 items-center gap-3">
+                                            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                                                {getAccountIcon(account.type)}
                                             </div>
 
-                                            <div>
-                                                <CardTitle className="text-base">
+                                            <div className="min-w-0">
+                                                <CardTitle className="truncate text-base">
                                                     {account.name}
                                                 </CardTitle>
 
-                                                <Badge
-                                                    variant="secondary"
-                                                    className="mt-1"
-                                                >
+                                                <p className="mt-1 text-sm text-muted-foreground">
                                                     {getAccountTypeLabel(
                                                         account.type,
                                                     )}
-                                                </Badge>
+                                                </p>
                                             </div>
                                         </div>
-
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() =>
-                                                setAccountToDelete(account)
-                                            }
-                                        >
-                                            <Trash2 />
-                                            <span className="sr-only">
-                                                Delete account
-                                            </span>
-                                        </Button>
                                     </div>
                                 </CardHeader>
 
@@ -156,19 +140,25 @@ export default function Index({ accounts }: Props) {
                                             Current Balance
                                         </p>
 
-                                        <p className="mt-1 text-2xl font-semibold">
+                                        <p className="mt-1 text-3xl font-bold tracking-tight">
                                             Rp{' '}
                                             {Number(
                                                 account.current_balance,
                                             ).toLocaleString('id-ID')}
                                         </p>
 
-                                        <p className="mt-2 text-xs text-muted-foreground">
-                                            Initial balance: Rp{' '}
-                                            {Number(
-                                                account.initial_balance,
-                                            ).toLocaleString('id-ID')}
-                                        </p>
+                                        <div className="mt-3 flex items-center justify-between border-t pt-3">
+                                            <span className="text-xs text-muted-foreground">
+                                                Initial balance
+                                            </span>
+
+                                            <span className="text-xs font-medium">
+                                                Rp{' '}
+                                                {Number(
+                                                    account.initial_balance,
+                                                ).toLocaleString('id-ID')}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     <div className="mt-4 flex gap-2">
@@ -176,6 +166,7 @@ export default function Index({ accounts }: Props) {
                                             variant="outline"
                                             size="sm"
                                             asChild
+                                            className="flex-1"
                                         >
                                             <Link
                                                 href={`/accounts/${account.id}/edit`}
@@ -184,6 +175,19 @@ export default function Index({ accounts }: Props) {
                                                 Edit
                                             </Link>
                                         </Button>
+
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() =>
+                                                setAccountToDelete(account)
+                                            }
+                                        >
+                                            <Trash2 />
+                                            <span className="sr-only sm:not-sr-only">
+                                                Delete
+                                            </span>
+                                        </Button>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -191,21 +195,21 @@ export default function Index({ accounts }: Props) {
                     </div>
                 ) : (
                     <Card>
-                        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                            <div className="flex size-12 items-center justify-center rounded-full bg-muted">
-                                <Wallet className="size-6" />
+                        <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                            <div className="flex size-14 items-center justify-center rounded-full bg-muted">
+                                <Wallet className="size-7 text-muted-foreground" />
                             </div>
 
-                            <h2 className="mt-4 text-lg font-semibold">
+                            <h2 className="mt-5 text-lg font-semibold">
                                 No accounts yet
                             </h2>
 
-                            <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-                                Add your first account to start tracking your
-                                finances.
+                            <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                                Add your first bank account, cash wallet, or
+                                e-wallet to start tracking your finances.
                             </p>
 
-                            <Button asChild className="mt-4">
+                            <Button asChild className="mt-5">
                                 <Link href="/accounts/create">
                                     <Plus />
                                     Add Account
@@ -226,26 +230,23 @@ export default function Index({ accounts }: Props) {
             >
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Delete Account?
-                        </AlertDialogTitle>
+                        <AlertDialogTitle>Delete Account?</AlertDialogTitle>
 
                         <AlertDialogDescription>
                             Are you sure you want to delete{' '}
-                            <strong>{accountToDelete?.name}</strong>?
-                            This action cannot be undone.
+                            <strong>{accountToDelete?.name}</strong>? This
+                            action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
 
                     <AlertDialogFooter>
-                        <AlertDialogCancel>
-                            Cancel
-                        </AlertDialogCancel>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
 
                         <AlertDialogAction
                             onClick={deleteAccount}
+                            disabled={deleting}
                         >
-                            Delete
+                            {deleting ? 'Deleting...' : 'Delete'}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

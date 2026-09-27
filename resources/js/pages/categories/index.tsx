@@ -26,12 +26,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Category {
     id: number;
@@ -73,8 +68,11 @@ function getCategoryTypeLabel(type: string) {
 }
 
 export default function Index({ categories }: Props) {
-    const [categoryToDelete, setCategoryToDelete] =
-        useState<Category | null>(null);
+    const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+        null,
+    );
+
+    const [deleting, setDeleting] = useState(false);
 
     const incomeCategories = categories.filter(
         (category) => category.type === 'income',
@@ -89,8 +87,13 @@ export default function Index({ categories }: Props) {
             return;
         }
 
+        setDeleting(true);
+
         router.delete(`/categories/${categoryToDelete.id}`, {
-            onFinish: () => setCategoryToDelete(null),
+            onFinish: () => {
+                setDeleting(false);
+                setCategoryToDelete(null);
+            },
         });
     }
 
@@ -101,10 +104,7 @@ export default function Index({ categories }: Props) {
                     <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
                             <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
-                                {getCategoryIcon(
-                                    category.name,
-                                    category.type,
-                                )}
+                                {getCategoryIcon(category.name, category.type)}
                             </div>
 
                             <div>
@@ -112,43 +112,39 @@ export default function Index({ categories }: Props) {
                                     {category.name}
                                 </CardTitle>
 
-                                <Badge
-                                    variant="secondary"
-                                    className="mt-1"
-                                >
+                                <Badge variant="secondary" className="mt-1">
                                     {getCategoryTypeLabel(category.type)}
                                 </Badge>
                             </div>
                         </div>
-
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() =>
-                                setCategoryToDelete(category)
-                            }
-                        >
-                            <Trash2 />
-                            <span className="sr-only">
-                                Delete category
-                            </span>
-                        </Button>
                     </div>
                 </CardHeader>
 
                 <CardContent>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                    >
-                        <Link
-                            href={`/categories/${category.id}/edit`}
+                    <div className="flex gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="flex-1"
                         >
-                            <Pencil />
-                            Edit
-                        </Link>
-                    </Button>
+                            <Link href={`/categories/${category.id}/edit`}>
+                                <Pencil />
+                                Edit
+                            </Link>
+                        </Button>
+
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCategoryToDelete(category)}
+                        >
+                            <Trash2 />
+                            <span className="sr-only sm:not-sr-only">
+                                Delete
+                            </span>
+                        </Button>
+                    </div>
                 </CardContent>
             </Card>
         );
@@ -181,15 +177,17 @@ export default function Index({ categories }: Props) {
 
                 {/* Income */}
                 <section className="space-y-4">
-                    <div>
-                        <h2 className="text-lg font-semibold">
-                            Income
-                        </h2>
+                    <div className="flex items-center gap-2">
+                        <h2 className="text-lg font-semibold">Income</h2>
 
-                        <p className="text-sm text-muted-foreground">
-                            Categories used to track money coming in.
-                        </p>
+                        <Badge variant="secondary">
+                            {incomeCategories.length}
+                        </Badge>
                     </div>
+
+                    <p className="text-sm text-muted-foreground">
+                        Categories used to track money coming in.
+                    </p>
 
                     {incomeCategories.length > 0 ? (
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -206,21 +204,21 @@ export default function Index({ categories }: Props) {
 
                 {/* Expense */}
                 <section className="space-y-4">
-                    <div>
-                        <h2 className="text-lg font-semibold">
-                            Expenses
-                        </h2>
+                    <div className="flex items-center gap-2">
+                        <h2 className="text-lg font-semibold">Expenses</h2>
 
-                        <p className="text-sm text-muted-foreground">
-                            Categories used to track money going out.
-                        </p>
+                        <Badge variant="secondary">
+                            {expenseCategories.length}
+                        </Badge>
                     </div>
+
+                    <p className="text-sm text-muted-foreground">
+                        Categories used to track money going out.
+                    </p>
 
                     {expenseCategories.length > 0 ? (
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {expenseCategories.map(
-                                renderCategoryCard,
-                            )}
+                            {expenseCategories.map(renderCategoryCard)}
                         </div>
                     ) : (
                         <Card>
@@ -243,28 +241,23 @@ export default function Index({ categories }: Props) {
             >
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Delete Category?
-                        </AlertDialogTitle>
+                        <AlertDialogTitle>Delete Category?</AlertDialogTitle>
 
                         <AlertDialogDescription>
                             Are you sure you want to delete{' '}
-                            <strong>
-                                {categoryToDelete?.name}
-                            </strong>
-                            ? This action cannot be undone.
+                            <strong>{categoryToDelete?.name}</strong>? This
+                            action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
 
                     <AlertDialogFooter>
-                        <AlertDialogCancel>
-                            Cancel
-                        </AlertDialogCancel>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
 
                         <AlertDialogAction
                             onClick={deleteCategory}
+                            disabled={deleting}
                         >
-                            Delete
+                            {deleting ? 'Deleting...' : 'Delete'}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

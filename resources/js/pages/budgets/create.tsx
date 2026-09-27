@@ -1,12 +1,7 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -58,7 +53,9 @@ export default function Create({ categories }: Props) {
 
                                 <Select
                                     value={data.category_id}
-                                    onValueChange={(value) => setData('category_id', value)}
+                                    onValueChange={(value) =>
+                                        setData('category_id', value)
+                                    }
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select expense category" />
@@ -157,7 +154,9 @@ export default function Create({ categories }: Props) {
                                 </Button>
 
                                 <Button type="submit" disabled={processing}>
-                                    {processing ? 'Creating...' : 'Create Budget'}
+                                    {processing
+                                        ? 'Creating...'
+                                        : 'Create Budget'}
                                 </Button>
                             </div>
                         </form>
@@ -166,4 +165,4 @@ export default function Create({ categories }: Props) {
             </div>
         </>
     );
-}    
+}

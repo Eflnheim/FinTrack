@@ -2,12 +2,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Save } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -52,9 +47,7 @@ export default function Edit({ account }: Props) {
                     <Button variant="ghost" size="icon" asChild>
                         <Link href="/accounts">
                             <ArrowLeft />
-                            <span className="sr-only">
-                                Back to accounts
-                            </span>
+                            <span className="sr-only">Back to accounts</span>
                         </Link>
                     </Button>
 
@@ -79,9 +72,7 @@ export default function Edit({ account }: Props) {
                         <form onSubmit={submit} className="space-y-6">
                             {/* Name */}
                             <div className="space-y-2">
-                                <Label htmlFor="name">
-                                    Account Name
-                                </Label>
+                                <Label htmlFor="name">Account Name</Label>
 
                                 <Input
                                     id="name"
@@ -102,9 +93,7 @@ export default function Edit({ account }: Props) {
 
                             {/* Type */}
                             <div className="space-y-2">
-                                <Label htmlFor="type">
-                                    Account Type
-                                </Label>
+                                <Label htmlFor="type">Account Type</Label>
 
                                 <Select
                                     value={data.type}
@@ -160,8 +149,7 @@ export default function Edit({ account }: Props) {
                                 />
 
                                 <p className="text-sm text-muted-foreground">
-                                    Update the starting amount for this
-                                    account.
+                                    Update the starting amount for this account.
                                 </p>
 
                                 {errors.initial_balance && (
@@ -173,21 +161,13 @@ export default function Edit({ account }: Props) {
 
                             {/* Actions */}
                             <div className="flex justify-end gap-3">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    asChild
-                                >
-                                    <Link href="/accounts">
-                                        Cancel
-                                    </Link>
+                                <Button type="button" variant="outline" asChild>
+                                    <Link href="/accounts">Cancel</Link>
                                 </Button>
 
                                 <Button type="submit" disabled={processing}>
                                     <Save />
-                                    {processing
-                                        ? 'Saving...'
-                                        : 'Save Changes'}
+                                    {processing ? 'Saving...' : 'Save Changes'}
                                 </Button>
                             </div>
                         </form>

@@ -2,12 +2,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -50,9 +45,7 @@ export default function Edit({ category }: Props) {
                     <Button variant="ghost" size="icon" asChild>
                         <Link href="/categories">
                             <ArrowLeft />
-                            <span className="sr-only">
-                                Back to categories
-                            </span>
+                            <span className="sr-only">Back to categories</span>
                         </Link>
                     </Button>
 
@@ -77,9 +70,7 @@ export default function Edit({ category }: Props) {
                         <form onSubmit={submit} className="space-y-6">
                             {/* Name */}
                             <div className="space-y-2">
-                                <Label htmlFor="name">
-                                    Category Name
-                                </Label>
+                                <Label htmlFor="name">Category Name</Label>
 
                                 <Input
                                     id="name"
@@ -97,13 +88,13 @@ export default function Edit({ category }: Props) {
 
                             {/* Type */}
                             <div className="space-y-2">
-                                <Label htmlFor="type">
-                                    Type
-                                </Label>
+                                <Label htmlFor="type">Type</Label>
 
                                 <Select
                                     value={data.type}
-                                    onValueChange={(value) => setData('type', value)}
+                                    onValueChange={(value) =>
+                                        setData('type', value)
+                                    }
                                 >
                                     <SelectTrigger id="type">
                                         <SelectValue />
@@ -128,14 +119,8 @@ export default function Edit({ category }: Props) {
 
                             {/* Actions */}
                             <div className="flex justify-end gap-3">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    asChild
-                                >
-                                    <Link href="/categories">
-                                        Cancel
-                                    </Link>
+                                <Button type="button" variant="outline" asChild>
+                                    <Link href="/categories">Cancel</Link>
                                 </Button>
 
                                 <Button type="submit" disabled={processing}>

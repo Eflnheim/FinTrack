@@ -61,9 +61,7 @@ export default function Create() {
                         <form onSubmit={submit} className="space-y-6">
                             {/* Name */}
                             <div className="space-y-2">
-                                <Label htmlFor="name">
-                                    Account Name
-                                </Label>
+                                <Label htmlFor="name">Account Name</Label>
 
                                 <Input
                                     id="name"
@@ -84,9 +82,7 @@ export default function Create() {
 
                             {/* Type */}
                             <div className="space-y-2">
-                                <Label htmlFor="type">
-                                    Account Type
-                                </Label>
+                                <Label htmlFor="type">Account Type</Label>
 
                                 <Select
                                     value={data.type}
@@ -155,14 +151,8 @@ export default function Create() {
 
                             {/* Actions */}
                             <div className="flex justify-end gap-3">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    asChild
-                                >
-                                    <Link href="/accounts">
-                                        Cancel
-                                    </Link>
+                                <Button type="button" variant="outline" asChild>
+                                    <Link href="/accounts">Cancel</Link>
                                 </Button>
 
                                 <Button type="submit" disabled={processing}>

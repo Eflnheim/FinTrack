@@ -3,12 +3,8 @@ import { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Pencil, Trash2, WalletCards } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -69,20 +65,36 @@ const getProgressWidth = (percentage: number) => {
     return Math.min(percentage, 100);
 };
 
+const getBudgetStatus = (percentage: number) => {
+    if (percentage > 100) {
+        return 'Over budget';
+    }
+
+    if (percentage >= 80) {
+        return 'Near limit';
+    }
+
+    return 'On track';
+};
+
 export default function Index({ budgets }: Props) {
     const [budgetToDelete, setBudgetToDelete] = useState<Budget | null>(null);
+    const [deleting, setDeleting] = useState(false);
 
     const deleteBudget = () => {
         if (!budgetToDelete) {
-            return
+            return;
         }
 
+        setDeleting(true);
+
         router.delete(`/budgets/${budgetToDelete.id}`, {
-            onSuccess: () => {
+            onFinish: () => {
+                setDeleting(false);
                 setBudgetToDelete(null);
             },
         });
-    }
+    };
 
     return (
         <>
@@ -101,9 +113,7 @@ export default function Index({ budgets }: Props) {
                     </div>
 
                     <Button asChild>
-                        <Link href="/budgets/create">
-                            Add Budget
-                        </Link>
+                        <Link href="/budgets/create">Add Budget</Link>
                     </Button>
                 </div>
 
@@ -114,43 +124,52 @@ export default function Index({ budgets }: Props) {
 
                     <CardContent>
                         {budgets.length === 0 ? (
-                            <div className="py-12 text-center">
-                                <p className="text-muted-foreground">
-                                    You don't have any budgets yet.
+                            <div className="flex flex-col items-center justify-center py-16 text-center">
+                                <div className="flex size-14 items-center justify-center rounded-full bg-muted">
+                                    <WalletCards className="size-7 text-muted-foreground" />
+                                </div>
+
+                                <h2 className="mt-5 text-lg font-semibold">
+                                    No budgets yet
+                                </h2>
+
+                                <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                                    Create a monthly budget to keep your
+                                    spending on track.
                                 </p>
 
-                                <Button asChild className="mt-4">
+                                <Button asChild className="mt-5">
                                     <Link href="/budgets/create">
-                                        Create your first budget
+                                        Add Budget
                                     </Link>
                                 </Button>
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
-                                <table className="w-full text-sm">
+                                <table className="w-full min-w-[850px] text-sm">
                                     <thead>
                                         <tr className="border-b text-left">
-                                            <th className="px-4 py-3 font-medium">
+                                            <th className="px-4 py-3 font-medium whitespace-nowrap">
                                                 Category
                                             </th>
 
-                                            <th className="px-4 py-3 font-medium">
+                                            <th className="px-4 py-3 font-medium whitespace-nowrap">
                                                 Period
                                             </th>
 
-                                            <th className="px-4 py-3 font-medium">
+                                            <th className="px-4 py-3 font-medium whitespace-nowrap">
                                                 Budget
                                             </th>
 
-                                            <th className="px-4 py-3 font-medium">
+                                            <th className="px-4 py-3 font-medium whitespace-nowrap">
                                                 Spent
                                             </th>
 
-                                            <th className="px-4 py-3 font-medium">
+                                            <th className="px-4 py-3 font-medium whitespace-nowrap">
                                                 Remaining
                                             </th>
 
-                                            <th className="px-4 py-3 text-right font-medium">
+                                            <th className="px-4 py-3 text-right font-medium whitespace-nowrap">
                                                 Actions
                                             </th>
                                         </tr>
@@ -163,32 +182,66 @@ export default function Index({ budgets }: Props) {
                                                 className="border-b last:border-0"
                                             >
                                                 <td className="px-4 py-4">
-                                                    <Badge variant="secondary">
+                                                    <Badge variant="outline">
                                                         {budget.category.name}
                                                     </Badge>
                                                 </td>
 
                                                 <td className="px-4 py-4">
-                                                    {monthNames[budget.month - 1]}{' '}
+                                                    {
+                                                        monthNames[
+                                                            budget.month - 1
+                                                        ]
+                                                    }{' '}
                                                     {budget.year}
                                                 </td>
 
-                                                <td className="px-4 py-4 font-medium">
-                                                    {formatCurrency(budget.amount)}
+                                                <td className="px-4 py-4">
+                                                    <p className="font-semibold">
+                                                        {formatCurrency(
+                                                            budget.amount,
+                                                        )}
+                                                    </p>
+
+                                                    <p className="mt-1 text-xs text-muted-foreground">
+                                                        Budget limit
+                                                    </p>
                                                 </td>
 
                                                 <td className="px-4 py-4">
                                                     <div>
-                                                        <p className="font-medium">
-                                                            {formatCurrency(budget.spent_amount)}
-                                                        </p>
+                                                        <div className="flex items-center justify-between gap-3">
+                                                            <p className="font-medium">
+                                                                {formatCurrency(
+                                                                    budget.spent_amount,
+                                                                )}
+                                                            </p>
+
+                                                            <Badge
+                                                                variant={
+                                                                    budget.percentage_used >
+                                                                    100
+                                                                        ? 'destructive'
+                                                                        : budget.percentage_used >=
+                                                                            80
+                                                                          ? 'secondary'
+                                                                          : 'default'
+                                                                }
+                                                            >
+                                                                {getBudgetStatus(
+                                                                    budget.percentage_used,
+                                                                )}
+                                                            </Badge>
+                                                        </div>
 
                                                         <div className="mt-2 h-2 w-full min-w-32 overflow-hidden rounded-full bg-muted">
                                                             <div
-                                                                className={`h-full rounded-full transition-all ${budget.percentage_used > 100
+                                                                className={`h-full rounded-full transition-all ${
+                                                                    budget.percentage_used >
+                                                                    100
                                                                         ? 'bg-destructive'
                                                                         : 'bg-primary'
-                                                                    }`}
+                                                                }`}
                                                                 style={{
                                                                     width: `${getProgressWidth(
                                                                         budget.percentage_used,
@@ -198,17 +251,23 @@ export default function Index({ budgets }: Props) {
                                                         </div>
 
                                                         <p className="mt-1 text-xs text-muted-foreground">
-                                                            {budget.percentage_used.toLocaleString('id-ID', {
-                                                                maximumFractionDigits: 1,
-                                                            })}
+                                                            {budget.percentage_used.toLocaleString(
+                                                                'id-ID',
+                                                                {
+                                                                    maximumFractionDigits: 1,
+                                                                },
+                                                            )}
                                                             % used
                                                         </p>
 
-                                                        {budget.remaining_amount < 0 && (
+                                                        {budget.remaining_amount <
+                                                            0 && (
                                                             <p className="mt-1 text-xs text-destructive">
                                                                 Over budget by{' '}
                                                                 {formatCurrency(
-                                                                    Math.abs(budget.remaining_amount),
+                                                                    Math.abs(
+                                                                        budget.remaining_amount,
+                                                                    ),
                                                                 )}
                                                             </p>
                                                         )}
@@ -216,38 +275,55 @@ export default function Index({ budgets }: Props) {
                                                 </td>
 
                                                 <td
-                                                    className={`px-4 py-4 font-medium ${budget.remaining_amount < 0
-                                                        ? 'text-destructive'
-                                                        : ''
-                                                        }`}
+                                                    className={`px-4 py-4 ${
+                                                        budget.remaining_amount <
+                                                        0
+                                                            ? 'text-destructive'
+                                                            : ''
+                                                    }`}
                                                 >
-                                                    {formatCurrency(budget.remaining_amount)}
+                                                    <p className="font-semibold">
+                                                        {formatCurrency(
+                                                            Math.abs(
+                                                                budget.remaining_amount,
+                                                            ),
+                                                        )}
+                                                    </p>
+
+                                                    <p className="mt-1 text-xs text-muted-foreground">
+                                                        {budget.remaining_amount <
+                                                        0
+                                                            ? 'Over budget'
+                                                            : 'Remaining'}
+                                                    </p>
                                                 </td>
 
                                                 <td className="px-4 py-4">
                                                     <div className="flex justify-end gap-2">
                                                         <Button
                                                             variant="outline"
-                                                            size="sm"
+                                                            size="icon"
                                                             asChild
+                                                            aria-label="Edit budget"
                                                         >
                                                             <Link
                                                                 href={`/budgets/${budget.id}/edit`}
                                                             >
-                                                                Edit
+                                                                <Pencil />
                                                             </Link>
                                                         </Button>
 
                                                         <Button
-                                                            variant="destructive"
-                                                            size="sm"
+                                                            variant="outline"
+                                                            size="icon"
                                                             onClick={() =>
                                                                 setBudgetToDelete(
                                                                     budget,
                                                                 )
                                                             }
+                                                            aria-label="Delete budget"
                                                         >
-                                                            Delete
+                                                            <Trash2 />
                                                         </Button>
                                                     </div>
                                                 </td>
@@ -271,27 +347,26 @@ export default function Index({ budgets }: Props) {
             >
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Delete budget?
-                        </AlertDialogTitle>
+                        <AlertDialogTitle>Delete budget?</AlertDialogTitle>
 
                         <AlertDialogDescription>
-                            This will permanently delete this budget.
-                            This action cannot be undone.
+                            This will permanently delete this budget. This
+                            action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
 
                     <AlertDialogFooter>
-                        <AlertDialogCancel>
-                            Cancel
-                        </AlertDialogCancel>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
 
-                        <AlertDialogAction onClick={deleteBudget}>
-                            Delete
+                        <AlertDialogAction
+                            onClick={deleteBudget}
+                            disabled={deleting}
+                        >
+                            {deleting ? 'Deleting...' : 'Delete'}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
         </>
     );
-}    
+}
