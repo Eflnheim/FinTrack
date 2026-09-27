@@ -309,3 +309,11 @@ export default function TransactionsIndex({ transactions }: Props) {
         </>
     );
 }
+TransactionsIndex.layout = {
+    breadcrumbs: [
+        {
+            title: 'Transactions',
+            href: '/transactions',
+        },
+    ],
+};

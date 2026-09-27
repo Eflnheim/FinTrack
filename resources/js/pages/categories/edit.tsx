@@ -23,7 +23,7 @@ interface Props {
     category: Category;
 }
 
-export default function Edit({ category }: Props) {
+export default function CategoriesEdit({ category }: Props) {
     const { data, setData, put, processing, errors } = useForm({
         name: category.name,
         type: category.type,
@@ -134,3 +134,15 @@ export default function Edit({ category }: Props) {
         </>
     );
 }
+CategoriesEdit.layout = {
+    breadcrumbs: [
+        {
+            title: 'Categories',
+            href: '/categories',
+        },
+        {
+            title: 'Edit Category',
+            href: '',
+        },
+    ],
+};

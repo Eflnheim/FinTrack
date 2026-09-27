@@ -13,7 +13,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-export default function Create() {
+export default function CategoriesCreate() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         type: '',
@@ -127,3 +127,15 @@ export default function Create() {
         </>
     );
 }
+CategoriesCreate.layout = {
+    breadcrumbs: [
+        {
+            title: 'Categories',
+            href: '/categories',
+        },
+        {
+            title: 'Add Category',
+            href: '',
+        },
+    ],
+};

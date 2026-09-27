@@ -77,7 +77,7 @@ const getBudgetStatus = (percentage: number) => {
     return 'On track';
 };
 
-export default function Index({ budgets }: Props) {
+export default function BudgetsIndex({ budgets }: Props) {
     const [budgetToDelete, setBudgetToDelete] = useState<Budget | null>(null);
     const [deleting, setDeleting] = useState(false);
 
@@ -370,3 +370,11 @@ export default function Index({ budgets }: Props) {
         </>
     );
 }
+BudgetsIndex.layout = {
+    breadcrumbs: [
+        {
+            title: 'Budgets',
+            href: '/budgets',
+        },
+    ],
+}; 

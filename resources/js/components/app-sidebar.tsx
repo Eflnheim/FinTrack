@@ -1,7 +1,6 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import { ChartNoAxesCombined, CreditCard, LayoutGrid, Tags, Wallet } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -25,25 +24,22 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Accounts',
         href: '/accounts',
-        icon: FolderGit2,
+        icon: Wallet,
     },
     {
         title: 'Categories',
         href: '/categories',
-        icon: FolderGit2,
-    },
-];
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
+        icon: Tags,
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'Transactions',
+        href: '/transactions',
+        icon: CreditCard,
+    },
+    {
+        title: 'Budgets',
+        href: '/budgets',
+        icon: ChartNoAxesCombined,
     },
 ];
 
@@ -67,7 +63,6 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

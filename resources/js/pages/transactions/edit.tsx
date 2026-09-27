@@ -40,7 +40,7 @@ interface Props {
     categories: Category[];
 }
 
-export default function EditTransaction({
+export default function TransactionsEdit({
     transaction,
     accounts,
     categories,
@@ -246,3 +246,15 @@ export default function EditTransaction({
         </>
     );
 }
+TransactionsEdit.layout = {
+    breadcrumbs: [
+        {
+            title: 'Transactions',
+            href: '/transactions',
+        },
+        {
+            title: 'Edit Transaction',
+            href: '',
+        },
+    ],
+};

@@ -24,7 +24,7 @@ interface Props {
     account: Account;
 }
 
-export default function Edit({ account }: Props) {
+export default function AccountsEdit({ account }: Props) {
     const { data, setData, put, processing, errors } = useForm({
         name: account.name,
         type: account.type,
@@ -177,3 +177,15 @@ export default function Edit({ account }: Props) {
         </>
     );
 }
+AccountsEdit.layout = {
+    breadcrumbs: [
+        {
+            title: 'Accounts',
+            href: '/accounts',
+        },
+        {
+            title: 'Edit Account',
+            href: '',
+        },
+    ],
+};

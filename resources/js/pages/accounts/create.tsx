@@ -13,7 +13,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-export default function Create() {
+export default function AccountsCreate() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         type: 'bank',
@@ -169,3 +169,15 @@ export default function Create() {
         </>
     );
 }
+AccountsCreate.layout = {
+    breadcrumbs: [
+        {
+            title: 'Accounts',
+            href: '/accounts',
+        },
+        {
+            title: 'Create Account',
+            href: '',
+        },
+    ],
+};

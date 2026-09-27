@@ -22,7 +22,7 @@ interface Props {
     categories: Category[];
 }
 
-export default function Create({ categories }: Props) {
+export default function BudgetsCreate({ categories }: Props) {
     const { data, setData, post, processing, errors } = useForm({
         category_id: '',
         amount: '',
@@ -166,3 +166,15 @@ export default function Create({ categories }: Props) {
         </>
     );
 }
+BudgetsCreate.layout = {
+    breadcrumbs: [
+        {
+            title: 'Budgets',
+            href: '/budgets',
+        },
+        {
+            title: 'Create Budget',
+            href: '',
+        },
+    ],
+};

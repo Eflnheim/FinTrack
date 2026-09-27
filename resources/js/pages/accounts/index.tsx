@@ -60,7 +60,7 @@ function getAccountTypeLabel(type: string) {
     }
 }
 
-export default function Index({ accounts }: Props) {
+export default function AccountsIndex({ accounts }: Props) {
     const [accountToDelete, setAccountToDelete] = useState<Account | null>(
         null,
     );
@@ -254,3 +254,12 @@ export default function Index({ accounts }: Props) {
         </>
     );
 }
+
+AccountsIndex.layout = {
+    breadcrumbs: [
+        {
+            title: 'Accounts',
+            href: '/accounts',
+        },
+    ],
+};

@@ -29,7 +29,7 @@ interface Props {
     categories: Category[];
 }
 
-export default function Create({ accounts, categories }: Props) {
+export default function TransactionsCreate({ accounts, categories }: Props) {
     const { data, setData, post, processing, errors } = useForm({
         type: 'expense' as 'income' | 'expense',
         account_id: '',
@@ -227,3 +227,15 @@ export default function Create({ accounts, categories }: Props) {
         </>
     );
 }
+TransactionsCreate.layout = {
+    breadcrumbs: [
+        {
+            title: 'Transactions',
+            href: '/transactions',
+        },
+        {
+            title: 'Create Transaction',
+            href: '',
+        },
+    ],
+};

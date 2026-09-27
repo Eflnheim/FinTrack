@@ -67,7 +67,7 @@ function getCategoryTypeLabel(type: string) {
     return type === 'income' ? 'Income' : 'Expense';
 }
 
-export default function Index({ categories }: Props) {
+export default function CategoriesIndex({ categories }: Props) {
     const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
         null,
     );
@@ -265,3 +265,11 @@ export default function Index({ categories }: Props) {
         </>
     );
 }
+CategoriesIndex.layout = {
+    breadcrumbs: [
+        {
+            title: 'Categories',
+            href: '/categories',
+        },
+    ],
+};

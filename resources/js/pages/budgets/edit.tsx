@@ -30,7 +30,7 @@ interface Props {
     categories: Category[];
 }
 
-export default function EditBudget({ budget, categories }: Props) {
+export default function BudgetsEdit({ budget, categories }: Props) {
     const { data, setData, put, processing, errors } = useForm({
         category_id: String(budget.category_id),
         amount: String(budget.amount),
@@ -165,3 +165,15 @@ export default function EditBudget({ budget, categories }: Props) {
         </>
     );
 }
+BudgetsEdit.layout = {
+    breadcrumbs: [
+        {
+            title: 'Budgets',
+            href: '/budgets',
+        },
+        {
+            title: 'Edit Budget',
+            href: '',
+        },
+    ],
+};
