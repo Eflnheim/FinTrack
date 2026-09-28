@@ -1,5 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Plus } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -156,7 +156,6 @@ export default function AccountsCreate() {
                                 </Button>
 
                                 <Button type="submit" disabled={processing}>
-                                    <Plus />
                                     {processing
                                         ? 'Creating...'
                                         : 'Create Account'}

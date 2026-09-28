@@ -70,6 +70,18 @@ class CategoryController extends Controller
     {
         $this->authorize('delete', $category);
 
+        if ($category->transactions()->exists()) {
+            return redirect()->route('categories.index')->withErrors([
+                'error' => 'Cannot delete a category that has transactions.',
+            ]);
+        }
+        
+        if ($category->budgets()->exists()) {
+            return redirect()->route('categories.index')->withErrors([
+                'error' => 'Cannot delete a category that has budgets.',
+            ]);
+        }
+
         $category->delete();
 
         return redirect()->route('categories.index');

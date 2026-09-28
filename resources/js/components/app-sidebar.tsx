@@ -1,5 +1,11 @@
 import { Link } from '@inertiajs/react';
-import { ChartNoAxesCombined, CreditCard, LayoutGrid, Tags, Wallet } from 'lucide-react';
+import {
+    ChartNoAxesCombined,
+    CreditCard,
+    LayoutGrid,
+    Tags,
+    Wallet,
+} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';

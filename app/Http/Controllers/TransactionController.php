@@ -11,15 +11,62 @@ use Inertia\Inertia;
 
 class TransactionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $transactions = Transaction::where('user_id', auth()->id())
-            ->with(['account', 'category'])
+        $query = Transaction::where('user_id', auth()->id())
+            ->with(['account', 'category']);
+
+        if ($request->filled('search')) {
+            $query->where('description', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('account')) {
+            $query->where('account_id', $request->account);
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('transaction_date', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('transaction_date', '<=', $request->date_to);
+        }
+
+        $transactions = $query
             ->latest('transaction_date')
+            ->latest('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        $accounts = Account::where('user_id', auth()->id())
+            ->orderBy('name')
+            ->get();
+
+        $categories = Category::where('user_id', auth()->id())
+            ->orderBy('type')
+            ->orderBy('name')
             ->get();
 
         return Inertia::render('transactions/index', [
             'transactions' => $transactions,
+            'filters' => [
+                'search' => $request->search,
+                'type' => $request->type,
+                'account' => $request->account,
+                'category' => $request->category,
+                'date_from' => $request->date_from,
+                'date_to' => $request->date_to,
+            ],
+            'accounts' => $accounts,
+            'categories' => $categories,
         ]);
     }
 
@@ -48,16 +95,16 @@ class TransactionController extends Controller
                 Rule::exists('accounts', 'id')
                     ->where('user_id', auth()->id()),
             ],
+            'type' => ['required', 'in:income,expense'],
             'category_id' => [
                 'required',
                 Rule::exists('categories', 'id')
                     ->where('user_id', auth()->id())
                     ->where('type', $request->input('type')),
             ],
-            'type' => ['required', 'in:income,expense'],
             'amount' => ['required', 'numeric', 'min:0.01'],
             'description' => ['nullable', 'string'],
-            'transaction_date' => ['required', 'date'],
+            'transaction_date' => ['required', 'date', 'before_or_equal:today'],
         ]);
 
         Transaction::create([
@@ -103,16 +150,16 @@ class TransactionController extends Controller
                 Rule::exists('accounts', 'id')
                     ->where('user_id', auth()->id()),
             ],
+            'type' => ['required', 'in:income,expense'],
             'category_id' => [
                 'required',
                 Rule::exists('categories', 'id')
                     ->where('user_id', auth()->id())
                     ->where('type', $request->input('type')),
             ],
-            'type' => ['required', 'in:income,expense'],
             'amount' => ['required', 'numeric', 'min:0.01'],
             'description' => ['nullable', 'string'],
-            'transaction_date' => ['required', 'date'],
+            'transaction_date' => ['required', 'date', 'before_or_equal:today'],
         ]);
 
         $transaction->update([

@@ -1,5 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -166,7 +166,6 @@ export default function AccountsEdit({ account }: Props) {
                                 </Button>
 
                                 <Button type="submit" disabled={processing}>
-                                    <Save />
                                     {processing ? 'Saving...' : 'Save Changes'}
                                 </Button>
                             </div>

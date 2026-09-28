@@ -15,6 +15,14 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 interface Account {
     id: number;
@@ -40,13 +48,82 @@ interface Transaction {
     category: Category;
 }
 
-interface Props {
-    transactions: Transaction[];
+interface Filters {
+    search: string | null;
+    type: string | null;
+    account: string | null;
+    category: string | null;
+    date_from: string | null;
+    date_to: string | null;
 }
 
-export default function TransactionsIndex({ transactions }: Props) {
+interface Pagination<T> {
+    data: T[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    next_page_url: string | null;
+    prev_page_url: string | null;
+}
+
+interface Props {
+    transactions: Pagination<Transaction>;
+    filters: Filters;
+    accounts: Account[];
+    categories: Category[];
+}
+
+export default function TransactionsIndex({
+    transactions,
+    filters,
+    accounts,
+    categories,
+}: Props) {
     const [transactionToDelete, setTransactionToDelete] =
         useState<Transaction | null>(null);
+    const [search, setSearch] = useState(filters.search ?? '');
+    const [type, setType] = useState(filters.type ?? '');
+    const [account, setAccount] = useState(filters.account ?? '');
+    const [category, setCategory] = useState(filters.category ?? '');
+    const [dateFrom, setDateFrom] = useState(filters.date_from ?? '');
+    const [dateTo, setDateTo] = useState(filters.date_to ?? '');
+
+    const applyFilters = () => {
+        router.get(
+            '/transactions',
+            {
+                search: search || undefined,
+                type: type || undefined,
+                account: account || undefined,
+                category: category || undefined,
+                date_from: dateFrom || undefined,
+                date_to: dateTo || undefined,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
+    };
+
+    const clearFilters = () => {
+        setSearch('');
+        setType('');
+        setAccount('');
+        setCategory('');
+        setDateFrom('');
+        setDateTo('');
+
+        router.get(
+            '/transactions',
+            {},
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
+    };
 
     const [deleting, setDeleting] = useState(false);
 
@@ -94,6 +171,95 @@ export default function TransactionsIndex({ transactions }: Props) {
                     </Button>
                 </div>
 
+                <div className="space-y-4 rounded-lg border bg-muted/20 p-4">
+                    <div className="flex flex-col gap-3 lg:flex-row">
+                        <Input
+                            placeholder="Search transactions..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="w-full"
+                        />
+
+                        <div className="flex gap-2 lg:shrink-0">
+                            <Button
+                                onClick={applyFilters}
+                                className="flex-1 lg:flex-none"
+                            >
+                                Search
+                            </Button>
+
+                            <Button
+                                variant="outline"
+                                onClick={clearFilters}
+                                className="flex-1 lg:flex-none"
+                            >
+                                Clear
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                        <Select value={type} onValueChange={setType}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="All types" />
+                            </SelectTrigger>
+
+                            <SelectContent>
+                                <SelectItem value="income">Income</SelectItem>
+                                <SelectItem value="expense">Expense</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <Select value={account} onValueChange={setAccount}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="All accounts" />
+                            </SelectTrigger>
+
+                            <SelectContent>
+                                {accounts.map((item) => (
+                                    <SelectItem
+                                        key={item.id}
+                                        value={String(item.id)}
+                                    >
+                                        {item.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        <Select value={category} onValueChange={setCategory}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="All categories" />
+                            </SelectTrigger>
+
+                            <SelectContent>
+                                {categories.map((item) => (
+                                    <SelectItem
+                                        key={item.id}
+                                        value={String(item.id)}
+                                    >
+                                        {item.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        <Input
+                            type="date"
+                            value={dateFrom}
+                            onChange={(e) => setDateFrom(e.target.value)}
+                            className="w-full"
+                        />
+
+                        <Input
+                            type="date"
+                            value={dateTo}
+                            onChange={(e) => setDateTo(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
+                </div>
+
                 <Card>
                     <CardHeader>
                         <CardTitle>Transaction History</CardTitle>
@@ -129,7 +295,7 @@ export default function TransactionsIndex({ transactions }: Props) {
                                 </thead>
 
                                 <tbody>
-                                    {transactions.length === 0 ? (
+                                    {transactions.data.length === 0 ? (
                                         <tr>
                                             <td colSpan={7}>
                                                 <div className="flex flex-col items-center justify-center px-4 py-16 text-center">
@@ -160,7 +326,7 @@ export default function TransactionsIndex({ transactions }: Props) {
                                             </td>
                                         </tr>
                                     ) : (
-                                        transactions.map((transaction) => (
+                                        transactions.data.map((transaction) => (
                                             <tr
                                                 key={transaction.id}
                                                 className="border-b last:border-0"
@@ -272,6 +438,58 @@ export default function TransactionsIndex({ transactions }: Props) {
                                 </tbody>
                             </table>
                         </div>
+
+                        {transactions.last_page > 1 && (
+                            <div className="flex flex-col gap-3 border-t px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+                                <p className="text-center text-sm text-muted-foreground sm:text-left">
+                                    Showing{' '}
+                                    {(transactions.current_page - 1) *
+                                        transactions.per_page +
+                                        1}{' '}
+                                    to{' '}
+                                    {Math.min(
+                                        transactions.current_page *
+                                            transactions.per_page,
+                                        transactions.total,
+                                    )}{' '}
+                                    of {transactions.total} transactions
+                                </p>
+
+                                <div className="flex justify-center gap-2 sm:justify-end">
+                                    {transactions.prev_page_url ? (
+                                        <Button variant="outline" asChild>
+                                            <Link
+                                                href={
+                                                    transactions.prev_page_url
+                                                }
+                                            >
+                                                Previous
+                                            </Link>
+                                        </Button>
+                                    ) : (
+                                        <Button variant="outline" disabled>
+                                            Previous
+                                        </Button>
+                                    )}
+
+                                    {transactions.next_page_url ? (
+                                        <Button variant="outline" asChild>
+                                            <Link
+                                                href={
+                                                    transactions.next_page_url
+                                                }
+                                            >
+                                                Next
+                                            </Link>
+                                        </Button>
+                                    ) : (
+                                        <Button variant="outline" disabled>
+                                            Next
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>

@@ -73,6 +73,12 @@ class AccountController extends Controller
     public function destroy(Account $account)
     {
         $this->authorize('delete', $account);
+
+        if ($account->transactions()->exists()) {
+            return redirect()->route('accounts.index')->withErrors([
+                'error' => 'Cannot delete an account that has transactions.',
+            ]);
+        }
         $account->delete();
 
         return redirect()->route('accounts.index');
