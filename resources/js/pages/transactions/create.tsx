@@ -36,7 +36,7 @@ export default function TransactionsCreate({ accounts, categories }: Props) {
         category_id: '',
         amount: '',
         description: '',
-        transaction_date: '',
+        transaction_date: new Date().toISOString().split('T')[0],
     });
 
     const submit = (event: React.FormEvent) => {
@@ -156,14 +156,18 @@ export default function TransactionsCreate({ accounts, categories }: Props) {
 
                                 <Input
                                     id="amount"
-                                    type="number"
-                                    min="0.01"
-                                    step="0.01"
+                                    type="text"
+                                    inputMode="numeric"
                                     placeholder="0"
-                                    value={data.amount}
-                                    onChange={(e) =>
-                                        setData('amount', e.target.value)
+                                    value={
+                                        data.amount
+                                            ? Number(data.amount).toLocaleString('id-ID')
+                                            : ''
                                     }
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/\D/g, '');
+                                        setData('amount', value);
+                                    }}
                                 />
                                 {errors.amount && (
                                     <p className="text-sm text-destructive">

@@ -75,9 +75,10 @@ class AccountController extends Controller
         $this->authorize('delete', $account);
 
         if ($account->transactions()->exists()) {
-            return redirect()->route('accounts.index')->withErrors([
-                'error' => 'Cannot delete an account that has transactions.',
-            ]);
+            return Inertia::flash('toast', [
+                'type' => 'error',
+                'message' => 'Cannot delete an account that has transactions.',
+            ])->back();
         }
         $account->delete();
 

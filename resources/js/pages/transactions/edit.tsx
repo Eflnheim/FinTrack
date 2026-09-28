@@ -172,13 +172,18 @@ export default function TransactionsEdit({
 
                                 <Input
                                     id="amount"
-                                    type="number"
-                                    min="0.01"
-                                    step="0.01"
-                                    value={data.amount}
-                                    onChange={(e) =>
-                                        setData('amount', e.target.value)
+                                    type="text"
+                                    inputMode="numeric"
+                                    placeholder="0"
+                                    value={
+                                        data.amount
+                                            ? Number(data.amount).toLocaleString('id-ID')
+                                            : ''
                                     }
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/\D/g, '');
+                                        setData('amount', value);
+                                    }}
                                 />
                                 {errors.amount && (
                                     <p className="text-sm text-destructive">

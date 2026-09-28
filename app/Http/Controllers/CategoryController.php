@@ -71,15 +71,17 @@ class CategoryController extends Controller
         $this->authorize('delete', $category);
 
         if ($category->transactions()->exists()) {
-            return redirect()->route('categories.index')->withErrors([
-                'error' => 'Cannot delete a category that has transactions.',
-            ]);
+            return Inertia::flash('toast', [
+                'type' => 'error',
+                'message' => 'Cannot delete a category that has transactions.',
+            ])->back();
         }
-        
+
         if ($category->budgets()->exists()) {
-            return redirect()->route('categories.index')->withErrors([
-                'error' => 'Cannot delete a category that has budgets.',
-            ]);
+            return Inertia::flash('toast', [
+                'type' => 'error',
+                'message' => 'Cannot delete a category that has budgets.',
+            ])->back();
         }
 
         $category->delete();
