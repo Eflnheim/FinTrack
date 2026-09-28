@@ -6,6 +6,7 @@ import {
     Plus,
     Trash2,
     Wallet,
+    Receipt,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -166,27 +167,34 @@ export default function AccountsIndex({ accounts }: Props) {
                                             variant="outline"
                                             size="sm"
                                             asChild
-                                            className="flex-1"
+                                            className="min-w-0 flex-1"
                                         >
-                                            <Link
-                                                href={`/accounts/${account.id}/edit`}
-                                            >
-                                                <Pencil />
-                                                Edit
+                                            <Link href={`/transactions?account=${account.id}`}>
+                                                <Receipt />
+                                                <span className="truncate">View All Transactions</span>
                                             </Link>
                                         </Button>
 
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            onClick={() =>
-                                                setAccountToDelete(account)
-                                            }
+                                            asChild
+                                            aria-label={`Edit ${account.name}`}
+                                        >
+                                            <Link href={`/accounts/${account.id}/edit`}>
+                                                <Pencil />
+                                                <span className="sr-only">Edit</span>
+                                            </Link>
+                                        </Button>
+
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setAccountToDelete(account)}
+                                            aria-label={`Delete ${account.name}`}
                                         >
                                             <Trash2 />
-                                            <span className="sr-only sm:not-sr-only">
-                                                Delete
-                                            </span>
+                                            <span className="sr-only">Delete</span>
                                         </Button>
                                     </div>
                                 </CardContent>

@@ -171,6 +171,20 @@ export default function TransactionsIndex({
                     </Button>
                 </div>
 
+                {filters.account && (
+                    <div className="flex items-center gap-2 text-sm">
+                        <span className="text-muted-foreground">
+                            Filtered by account:
+                        </span>
+
+                        <Badge variant="secondary">
+                            {accounts.find(
+                                (item) => String(item.id) === filters.account,
+                            )?.name ?? 'Unknown account'}
+                        </Badge>
+                    </div>
+                )}
+
                 <div className="space-y-4 rounded-lg border bg-muted/20 p-4">
                     <div className="flex flex-col gap-3 lg:flex-row">
                         <Input
@@ -365,29 +379,28 @@ export default function TransactionsIndex({
                                                     <Badge
                                                         variant={
                                                             transaction.type ===
-                                                            'income'
+                                                                'income'
                                                                 ? 'default'
                                                                 : 'secondary'
                                                         }
                                                     >
                                                         {transaction.type ===
-                                                        'income'
+                                                            'income'
                                                             ? 'Income'
                                                             : 'Expense'}
                                                     </Badge>
                                                 </td>
 
                                                 <td
-                                                    className={`px-4 py-4 text-right ${
-                                                        transaction.type ===
+                                                    className={`px-4 py-4 text-right ${transaction.type ===
                                                         'income'
-                                                            ? 'text-green-600'
-                                                            : 'text-red-600'
-                                                    }`}
+                                                        ? 'text-green-600'
+                                                        : 'text-red-600'
+                                                        }`}
                                                 >
                                                     <div className="font-semibold">
                                                         {transaction.type ===
-                                                        'income'
+                                                            'income'
                                                             ? '+'
                                                             : '-'}
                                                         {formatCurrency(
@@ -397,7 +410,7 @@ export default function TransactionsIndex({
 
                                                     <div className="text-xs text-muted-foreground">
                                                         {transaction.type ===
-                                                        'income'
+                                                            'income'
                                                             ? 'Money in'
                                                             : 'Money out'}
                                                     </div>
@@ -449,7 +462,7 @@ export default function TransactionsIndex({
                                     to{' '}
                                     {Math.min(
                                         transactions.current_page *
-                                            transactions.per_page,
+                                        transactions.per_page,
                                         transactions.total,
                                     )}{' '}
                                     of {transactions.total} transactions
