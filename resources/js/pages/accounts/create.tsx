@@ -4,7 +4,11 @@ import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import {
+    Field,
+    FieldGroup,
+    FieldLabel,
+} from '@/components/ui/field';
 import {
     Select,
     SelectContent,
@@ -58,109 +62,115 @@ export default function AccountsCreate() {
                     </CardHeader>
 
                     <CardContent>
-                        <form onSubmit={submit} className="space-y-6">
-                            {/* Name */}
-                            <div className="space-y-2">
-                                <Label htmlFor="name">Account Name</Label>
+                        <form onSubmit={submit}>
+                            <FieldGroup className="gap-6">
+                                {/* Account Name */}
+                                <Field>
+                                    <FieldLabel htmlFor="name">
+                                        Account Name
+                                    </FieldLabel>
 
-                                <Input
-                                    id="name"
-                                    type="text"
-                                    placeholder="e.g. BCA, GoPay, Cash"
-                                    value={data.name}
-                                    onChange={(e) =>
-                                        setData('name', e.target.value)
-                                    }
-                                />
+                                    <Input
+                                        id="name"
+                                        type="text"
+                                        placeholder="e.g. BCA, GoPay, Cash"
+                                        value={data.name}
+                                        onChange={(e) =>
+                                            setData('name', e.target.value)
+                                        }
+                                    />
 
-                                {errors.name && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.name}
+                                    {errors.name && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.name}
+                                        </p>
+                                    )}
+                                </Field>
+
+                                {/* Account Type */}
+                                <Field>
+                                    <FieldLabel htmlFor="type">
+                                        Account Type
+                                    </FieldLabel>
+
+                                    <Select
+                                        value={data.type}
+                                        onValueChange={(value) =>
+                                            setData('type', value)
+                                        }
+                                    >
+                                        <SelectTrigger id="type" className="w-full">
+                                            <SelectValue placeholder="Select account type" />
+                                        </SelectTrigger>
+
+                                        <SelectContent>
+                                            <SelectItem value="bank">
+                                                Bank
+                                            </SelectItem>
+
+                                            <SelectItem value="cash">
+                                                Cash
+                                            </SelectItem>
+
+                                            <SelectItem value="e_wallet">
+                                                E-Wallet
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+
+                                    {errors.type && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.type}
+                                        </p>
+                                    )}
+                                </Field>
+
+                                {/* Initial Balance */}
+                                <Field>
+                                    <FieldLabel htmlFor="initial_balance">
+                                        Initial Balance
+                                    </FieldLabel>
+
+                                    <Input
+                                        id="initial_balance"
+                                        type="number"
+                                        min="0"
+                                        step="0.01"
+                                        placeholder="0"
+                                        value={data.initial_balance}
+                                        onChange={(e) =>
+                                            setData(
+                                                'initial_balance',
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+
+                                    <p className="text-sm text-muted-foreground">
+                                        The amount available in this account when
+                                        you start using FinTrack.
                                     </p>
-                                )}
-                            </div>
 
-                            {/* Type */}
-                            <div className="space-y-2">
-                                <Label htmlFor="type">Account Type</Label>
+                                    {errors.initial_balance && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.initial_balance}
+                                        </p>
+                                    )}
+                                </Field>
 
-                                <Select
-                                    value={data.type}
-                                    onValueChange={(value) =>
-                                        setData('type', value)
-                                    }
-                                >
-                                    <SelectTrigger id="type">
-                                        <SelectValue placeholder="Select account type" />
-                                    </SelectTrigger>
+                                {/* Actions */}
+                                <div className="flex justify-end gap-3">
+                                    <Button type="button" variant="outline" asChild>
+                                        <Link href="/accounts">Cancel</Link>
+                                    </Button>
 
-                                    <SelectContent>
-                                        <SelectItem value="bank">
-                                            Bank
-                                        </SelectItem>
-
-                                        <SelectItem value="cash">
-                                            Cash
-                                        </SelectItem>
-
-                                        <SelectItem value="e_wallet">
-                                            E-Wallet
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-
-                                {errors.type && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.type}
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Initial Balance */}
-                            <div className="space-y-2">
-                                <Label htmlFor="initial_balance">
-                                    Initial Balance
-                                </Label>
-
-                                <Input
-                                    id="initial_balance"
-                                    type="number"
-                                    min="0"
-                                    step="0.01"
-                                    placeholder="0"
-                                    value={data.initial_balance}
-                                    onChange={(e) =>
-                                        setData(
-                                            'initial_balance',
-                                            e.target.value,
-                                        )
-                                    }
-                                />
-
-                                <p className="text-sm text-muted-foreground">
-                                    The amount available in this account when
-                                    you start using FinTrack.
-                                </p>
-
-                                {errors.initial_balance && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.initial_balance}
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Actions */}
-                            <div className="flex justify-end gap-3">
-                                <Button type="button" variant="outline" asChild>
-                                    <Link href="/accounts">Cancel</Link>
-                                </Button>
-
-                                <Button type="submit" disabled={processing}>
-                                    {processing
-                                        ? 'Creating...'
-                                        : 'Create Account'}
-                                </Button>
-                            </div>
+                                    <Button type="submit" disabled={processing}>
+                                        {processing
+                                            ? 'Creating...'
+                                            : 'Create Account'}
+                                    </Button>
+                                </div>
+                            </FieldGroup>
                         </form>
                     </CardContent>
                 </Card>

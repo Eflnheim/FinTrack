@@ -4,7 +4,11 @@ import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import {
+    Field,
+    FieldGroup,
+    FieldLabel,
+} from '@/components/ui/field';
 import {
     Select,
     SelectContent,
@@ -57,69 +61,77 @@ export default function CategoriesCreate() {
                     </CardHeader>
 
                     <CardContent>
-                        <form onSubmit={submit} className="space-y-6">
-                            {/* Name */}
-                            <div className="space-y-2">
-                                <Label htmlFor="name">Category Name</Label>
+                        <form onSubmit={submit}>
+                            <FieldGroup className="gap-6">
+                                {/* Category Name */}
+                                <Field>
+                                    <FieldLabel htmlFor="name">
+                                        Category Name
+                                    </FieldLabel>
 
-                                <Input
-                                    id="name"
-                                    value={data.name}
-                                    onChange={(event) =>
-                                        setData('name', event.target.value)
-                                    }
-                                    placeholder="e.g. Food"
-                                />
-                                {errors.name && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.name}
-                                    </p>
-                                )}
-                            </div>
+                                    <Input
+                                        id="name"
+                                        value={data.name}
+                                        onChange={(event) =>
+                                            setData('name', event.target.value)
+                                        }
+                                        placeholder="e.g. Food"
+                                    />
 
-                            {/* Type */}
-                            <div className="space-y-2">
-                                <Label htmlFor="type">Type</Label>
+                                    {errors.name && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.name}
+                                        </p>
+                                    )}
+                                </Field>
 
-                                <Select
-                                    value={data.type}
-                                    onValueChange={(value) =>
-                                        setData('type', value)
-                                    }
-                                >
-                                    <SelectTrigger id="type">
-                                        <SelectValue placeholder="Select category type" />
-                                    </SelectTrigger>
+                                {/* Type */}
+                                <Field>
+                                    <FieldLabel htmlFor="type">
+                                        Type
+                                    </FieldLabel>
 
-                                    <SelectContent>
-                                        <SelectItem value="income">
-                                            Income
-                                        </SelectItem>
+                                    <Select
+                                        value={data.type}
+                                        onValueChange={(value) =>
+                                            setData('type', value)
+                                        }
+                                    >
+                                        <SelectTrigger id="type" className="w-full">
+                                            <SelectValue placeholder="Select category type" />
+                                        </SelectTrigger>
 
-                                        <SelectItem value="expense">
-                                            Expense
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                {errors.type && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.type}
-                                    </p>
-                                )}
-                            </div>
+                                        <SelectContent>
+                                            <SelectItem value="income">
+                                                Income
+                                            </SelectItem>
 
-                            {/* Actions */}
-                            <div className="flex justify-end gap-3">
-                                <Button type="button" variant="outline" asChild>
-                                    <Link href="/categories">Cancel</Link>
-                                </Button>
+                                            <SelectItem value="expense">
+                                                Expense
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
 
-                                <Button type="submit" disabled={processing}>
-                                    {processing
-                                        ? 'Creating...'
-                                        : 'Create Category'}
-                                </Button>
-                            </div>
+                                    {errors.type && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.type}
+                                        </p>
+                                    )}
+                                </Field>
+
+                                {/* Actions */}
+                                <div className="flex justify-end gap-3">
+                                    <Button type="button" variant="outline" asChild>
+                                        <Link href="/categories">Cancel</Link>
+                                    </Button>
+
+                                    <Button type="submit" disabled={processing}>
+                                        {processing
+                                            ? 'Creating...'
+                                            : 'Create Category'}
+                                    </Button>
+                                </div>
+                            </FieldGroup>
                         </form>
                     </CardContent>
                 </Card>

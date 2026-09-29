@@ -1,9 +1,13 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import {
+    Field,
+    FieldGroup,
+    FieldLabel,
+} from '@/components/ui/field';
 import {
     Select,
     SelectContent,
@@ -60,170 +64,204 @@ export default function TransactionsCreate({ accounts, categories }: Props) {
                     </CardHeader>
 
                     <CardContent>
-                        <form onSubmit={submit} className="space-y-6">
-                            <div className="space-y-2">
-                                <Label>Type</Label>
+                        <form onSubmit={submit}>
+                            <FieldGroup className="gap-6">
+                                {/* Type + Account */}
+                                <div className="grid gap-6 sm:grid-cols-2">
+                                    <Field>
+                                        <FieldLabel htmlFor="type">Type</FieldLabel>
 
-                                <Select
-                                    value={data.type}
-                                    onValueChange={(value) => {
-                                        setData(
-                                            'type',
-                                            value as 'income' | 'expense',
-                                        );
-                                        setData('category_id', '');
-                                    }}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select transaction type" />
-                                    </SelectTrigger>
+                                        <Select
+                                            value={data.type}
+                                            onValueChange={(value) => {
+                                                setData(
+                                                    'type',
+                                                    value as 'income' | 'expense',
+                                                );
+                                                setData('category_id', '');
+                                            }}
+                                        >
+                                            <SelectTrigger id="type" className="w-full">
+                                                <SelectValue placeholder="Select transaction type" />
+                                            </SelectTrigger>
 
-                                    <SelectContent>
-                                        <SelectItem value="expense">
-                                            Expense
-                                        </SelectItem>
-                                        <SelectItem value="income">
-                                            Income
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                                            <SelectContent>
+                                                <SelectItem value="expense">
+                                                    Expense
+                                                </SelectItem>
+                                                <SelectItem value="income">
+                                                    Income
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
 
-                            <div className="space-y-2">
-                                <Label>Account</Label>
+                                        {errors.type && (
+                                            <p className="text-sm text-destructive">
+                                                {errors.type}
+                                            </p>
+                                        )}
+                                    </Field>
 
-                                <Select
-                                    value={data.account_id}
-                                    onValueChange={(value) =>
-                                        setData('account_id', value)
-                                    }
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select account" />
-                                    </SelectTrigger>
+                                    <Field>
+                                        <FieldLabel htmlFor="account_id">
+                                            Account
+                                        </FieldLabel>
 
-                                    <SelectContent>
-                                        {accounts.map((account) => (
-                                            <SelectItem
-                                                key={account.id}
-                                                value={String(account.id)}
-                                            >
-                                                {account.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {errors.account_id && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.account_id}
-                                    </p>
-                                )}
-                            </div>
+                                        <Select
+                                            value={data.account_id}
+                                            onValueChange={(value) =>
+                                                setData('account_id', value)
+                                            }
+                                        >
+                                            <SelectTrigger id="account_id" className="w-full">
+                                                <SelectValue placeholder="Select account" />
+                                            </SelectTrigger>
 
-                            <div className="space-y-2">
-                                <Label>Category</Label>
+                                            <SelectContent>
+                                                {accounts.map((account) => (
+                                                    <SelectItem
+                                                        key={account.id}
+                                                        value={String(account.id)}
+                                                    >
+                                                        {account.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
 
-                                <Select
-                                    value={data.category_id}
-                                    onValueChange={(value) =>
-                                        setData('category_id', value)
-                                    }
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select category" />
-                                    </SelectTrigger>
+                                        {errors.account_id && (
+                                            <p className="text-sm text-destructive">
+                                                {errors.account_id}
+                                            </p>
+                                        )}
+                                    </Field>
+                                </div>
 
-                                    <SelectContent>
-                                        {filteredCategories.map((category) => (
-                                            <SelectItem
-                                                key={category.id}
-                                                value={String(category.id)}
-                                            >
-                                                {category.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {errors.category_id && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.category_id}
-                                    </p>
-                                )}
-                            </div>
+                                {/* Category */}
+                                <Field>
+                                    <FieldLabel htmlFor="category_id">
+                                        Category
+                                    </FieldLabel>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="amount">Amount</Label>
+                                    <Select
+                                        value={data.category_id}
+                                        onValueChange={(value) =>
+                                            setData('category_id', value)
+                                        }
+                                    >
+                                        <SelectTrigger id="category_id" className="w-full">
+                                            <SelectValue placeholder="Select category" />
+                                        </SelectTrigger>
 
-                                <Input
-                                    id="amount"
-                                    type="text"
-                                    inputMode="numeric"
-                                    placeholder="0"
-                                    value={
-                                        data.amount
-                                            ? Number(data.amount).toLocaleString('id-ID')
-                                            : ''
-                                    }
-                                    onChange={(e) => {
-                                        const value = e.target.value.replace(/\D/g, '');
-                                        setData('amount', value);
-                                    }}
-                                />
-                                {errors.amount && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.amount}
-                                    </p>
-                                )}
-                            </div>
+                                        <SelectContent>
+                                            {filteredCategories.map((category) => (
+                                                <SelectItem
+                                                    key={category.id}
+                                                    value={String(category.id)}
+                                                >
+                                                    {category.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="description">Description</Label>
+                                    {errors.category_id && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.category_id}
+                                        </p>
+                                    )}
+                                </Field>
 
-                                <Input
-                                    id="description"
-                                    placeholder="Optional description"
-                                    value={data.description}
-                                    onChange={(e) =>
-                                        setData('description', e.target.value)
-                                    }
-                                />
-                                {errors.description && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.description}
-                                    </p>
-                                )}
-                            </div>
+                                {/* Amount + Date */}
+                                <div className="grid gap-6 sm:grid-cols-2">
+                                    <Field>
+                                        <FieldLabel htmlFor="amount">
+                                            Amount
+                                        </FieldLabel>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="transaction_date">Date</Label>
+                                        <Input
+                                            id="amount"
+                                            type="text"
+                                            inputMode="numeric"
+                                            placeholder="0"
+                                            value={
+                                                data.amount
+                                                    ? Number(data.amount).toLocaleString('id-ID')
+                                                    : ''
+                                            }
+                                            onChange={(e) => {
+                                                const value = e.target.value.replace(/\D/g, '');
+                                                setData('amount', value);
+                                            }}
+                                        />
 
-                                <Input
-                                    id="transaction_date"
-                                    type="date"
-                                    value={data.transaction_date}
-                                    onChange={(e) =>
-                                        setData(
-                                            'transaction_date',
-                                            e.target.value,
-                                        )
-                                    }
-                                />
-                                {errors.transaction_date && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.transaction_date}
-                                    </p>
-                                )}
-                            </div>
+                                        {errors.amount && (
+                                            <p className="text-sm text-destructive">
+                                                {errors.amount}
+                                            </p>
+                                        )}
+                                    </Field>
 
-                            <Button
-                                type="submit"
-                                className="w-full"
-                                disabled={processing}
-                            >
-                                {processing
-                                    ? 'Creating...'
-                                    : 'Create Transaction'}
-                            </Button>
+                                    <Field>
+                                        <FieldLabel htmlFor="transaction_date">
+                                            Date
+                                        </FieldLabel>
+
+                                        <Input
+                                            id="transaction_date"
+                                            type="date"
+                                            value={data.transaction_date}
+                                            onChange={(e) =>
+                                                setData(
+                                                    'transaction_date',
+                                                    e.target.value,
+                                                )
+                                            }
+                                        />
+
+                                        {errors.transaction_date && (
+                                            <p className="text-sm text-destructive">
+                                                {errors.transaction_date}
+                                            </p>
+                                        )}
+                                    </Field>
+                                </div>
+
+                                {/* Description */}
+                                <Field>
+                                    <FieldLabel htmlFor="description">
+                                        Description
+                                    </FieldLabel>
+
+                                    <Input
+                                        id="description"
+                                        placeholder="Optional description"
+                                        value={data.description}
+                                        onChange={(e) =>
+                                            setData('description', e.target.value)
+                                        }
+                                    />
+
+                                    {errors.description && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.description}
+                                        </p>
+                                    )}
+                                </Field>
+
+                                {/* Actions */}
+                                <div className="flex justify-end gap-3">
+                                    <Button type="button" variant="outline" asChild>
+                                        <Link href="/transactions">Cancel</Link>
+                                    </Button>
+
+                                    <Button type="submit" disabled={processing}>
+                                        {processing
+                                            ? 'Creating...'
+                                            : 'Create Transaction'}
+                                    </Button>
+                                </div>
+                            </FieldGroup>
                         </form>
                     </CardContent>
                 </Card>
