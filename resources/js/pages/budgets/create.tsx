@@ -26,6 +26,21 @@ interface Props {
     categories: Category[];
 }
 
+const months = [
+    { value: '1', label: 'January' },
+    { value: '2', label: 'February' },
+    { value: '3', label: 'March' },
+    { value: '4', label: 'April' },
+    { value: '5', label: 'May' },
+    { value: '6', label: 'June' },
+    { value: '7', label: 'July' },
+    { value: '8', label: 'August' },
+    { value: '9', label: 'September' },
+    { value: '10', label: 'October' },
+    { value: '11', label: 'November' },
+    { value: '12', label: 'December' },
+];
+
 export default function BudgetsCreate({ categories }: Props) {
     const { data, setData, post, processing, errors } = useForm({
         category_id: '',
@@ -123,17 +138,27 @@ export default function BudgetsCreate({ categories }: Props) {
                                             Month
                                         </FieldLabel>
 
-                                        <Input
-                                            id="month"
-                                            type="number"
-                                            min="1"
-                                            max="12"
-                                            placeholder="1 - 12"
+                                        <Select
                                             value={data.month}
-                                            onChange={(e) =>
-                                                setData('month', e.target.value)
+                                            onValueChange={(value) =>
+                                                setData('month', value)
                                             }
-                                        />
+                                        >
+                                            <SelectTrigger id="month" className="w-full">
+                                                <SelectValue placeholder="Select month" />
+                                            </SelectTrigger>
+
+                                            <SelectContent>
+                                                {months.map((month) => (
+                                                    <SelectItem
+                                                        key={month.value}
+                                                        value={month.value}
+                                                    >
+                                                        {month.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
 
                                         {errors.month && (
                                             <p className="text-sm text-destructive">

@@ -26,10 +26,16 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'in:income,expense'],
-        ]);
+        $validated = $request->validate(
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'type' => ['required', 'in:income,expense'],
+            ],
+            [
+                'name.required' => 'Please enter a category name.',
+                'type.required' => 'Please select a category type.',
+            ],
+        );
 
         Category::create([
             'user_id' => auth()->id(),
@@ -53,10 +59,16 @@ class CategoryController extends Controller
     {
         $this->authorize('update', $category);
 
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'in:income,expense'],
-        ]);
+        $validated = $request->validate(
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'type' => ['required', 'in:income,expense'],
+            ],
+            [
+                'name.required' => 'Please enter a category name.',
+                'type.required' => 'Please select a category type.',
+            ],
+        );
 
         $category->update([
             'name' => $validated['name'],

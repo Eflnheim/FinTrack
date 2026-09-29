@@ -89,23 +89,32 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'account_id' => [
-                'required',
-                Rule::exists('accounts', 'id')
-                    ->where('user_id', auth()->id()),
+        $validated = $request->validate(
+            [
+                'account_id' => [
+                    'required',
+                    Rule::exists('accounts', 'id')
+                        ->where('user_id', auth()->id()),
+                ],
+                'type' => ['required', 'in:income,expense'],
+                'category_id' => [
+                    'required',
+                    Rule::exists('categories', 'id')
+                        ->where('user_id', auth()->id())
+                        ->where('type', $request->input('type')),
+                ],
+                'amount' => ['required', 'numeric', 'min:0.01'],
+                'description' => ['nullable', 'string'],
+                'transaction_date' => ['required', 'date', 'before_or_equal:today'],
             ],
-            'type' => ['required', 'in:income,expense'],
-            'category_id' => [
-                'required',
-                Rule::exists('categories', 'id')
-                    ->where('user_id', auth()->id())
-                    ->where('type', $request->input('type')),
+            [
+                'type.required' => 'Please select a transaction type.',
+                'account_id.required' => 'Please select an account.',
+                'category_id.required' => 'Please select a category.',
+                'amount.required' => 'Please enter an amount.',
+                'transaction_date.required' => 'Please select a date.',
             ],
-            'amount' => ['required', 'numeric', 'min:0.01'],
-            'description' => ['nullable', 'string'],
-            'transaction_date' => ['required', 'date', 'before_or_equal:today'],
-        ]);
+        );
 
         Transaction::create([
             'user_id' => auth()->id(),
@@ -160,6 +169,13 @@ class TransactionController extends Controller
             'amount' => ['required', 'numeric', 'min:0.01'],
             'description' => ['nullable', 'string'],
             'transaction_date' => ['required', 'date', 'before_or_equal:today'],
+        ],
+        [
+            'type.required' => 'Please select a transaction type.',
+            'account_id.required' => 'Please select an account.',
+            'category_id.required' => 'Please select a category.',
+            'amount.required' => 'Please enter an amount.',
+            'transaction_date.required' => 'Please select a date.',
         ]);
 
         $transaction->update([

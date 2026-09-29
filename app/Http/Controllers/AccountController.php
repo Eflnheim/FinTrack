@@ -26,11 +26,18 @@ class AccountController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'in:bank,cash,e_wallet'],
-            'initial_balance' => ['required', 'numeric', 'min:0'],
-        ]);
+        $validated = $request->validate(
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'type' => ['required', 'in:bank,cash,e_wallet'],
+                'initial_balance' => ['required', 'numeric', 'min:0'],
+            ],
+            [
+                'name.required' => 'Please enter an account name.',
+                'type.required' => 'Please select an account type.',
+                'initial_balance.required' => 'Please enter the initial balance.',
+            ],
+        );
 
         Account::create([
             'user_id' => auth()->id(),
@@ -55,11 +62,18 @@ class AccountController extends Controller
     {
         $this->authorize('update', $account);
 
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'in:bank,cash,e_wallet'],
-            'initial_balance' => ['required', 'numeric', 'min:0'],
-        ]);
+        $validated = $request->validate(
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'type' => ['required', 'in:bank,cash,e_wallet'],
+                'initial_balance' => ['required', 'numeric', 'min:0'],
+            ],
+            [
+                'name.required' => 'Please enter an account name.',
+                'type.required' => 'Please select an account type.',
+                'initial_balance.required' => 'Please enter the initial balance.',
+            ],
+        );
 
         $account->update([
             'name' => $validated['name'],

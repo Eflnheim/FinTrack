@@ -37,22 +37,32 @@ class BudgetController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'category_id' => [
-                'required',
-                Rule::exists('categories', 'id')
-                    ->where('user_id', auth()->id())
-                    ->where('type', 'expense'),
+        $validated = $request->validate(
+            [
+                'category_id' => [
+                    'required',
+                    Rule::exists('categories', 'id')
+                        ->where('user_id', auth()->id())
+                        ->where('type', 'expense'),
 
-                Rule::unique('budgets', 'category_id')
-                    ->where('user_id', auth()->id())
-                    ->where('month', $request->input('month'))
-                    ->where('year', $request->input('year')),
+                    Rule::unique('budgets', 'category_id')
+                        ->where('user_id', auth()->id())
+                        ->where('month', $request->input('month'))
+                        ->where('year', $request->input('year')),
+                ],
+
+                'amount' => ['required', 'numeric', 'min:0.01'],
+                'month' => ['required', 'integer', 'between:1,12'],
+                'year' => ['required', 'integer', 'min:2000', 'max:2100'],
             ],
-            'amount' => ['required', 'numeric', 'min:0.01'],
-            'month' => ['required', 'integer', 'between:1,12'],
-            'year' => ['required', 'integer', 'min:2000', 'max:2100'],
-        ]);
+            [
+                'category_id.required' => 'Please select a category.',
+                'category_id.unique' => 'A budget for this category and period already exists.',
+                'amount.required' => 'Please enter a budget amount.',
+                'month.required' => 'Please enter a month.',
+                'year.required' => 'Please enter a year.',
+            ],
+        );
 
         Budget::create([
             'user_id' => auth()->id(),
@@ -84,23 +94,33 @@ class BudgetController extends Controller
     {
         $this->authorize('update', $budget);
 
-        $validated = $request->validate([
-            'category_id' => [
-                'required',
-                Rule::exists('categories', 'id')
-                    ->where('user_id', auth()->id())
-                    ->where('type', 'expense'),
+        $validated = $request->validate(
+            [
+                'category_id' => [
+                    'required',
+                    Rule::exists('categories', 'id')
+                        ->where('user_id', auth()->id())
+                        ->where('type', 'expense'),
 
-                Rule::unique('budgets', 'category_id')
-                    ->where('user_id', auth()->id())
-                    ->where('month', $request->input('month'))
-                    ->where('year', $request->input('year'))
-                    ->ignore($budget->id),
+                    Rule::unique('budgets', 'category_id')
+                        ->where('user_id', auth()->id())
+                        ->where('month', $request->input('month'))
+                        ->where('year', $request->input('year'))
+                        ->ignore($budget->id),
+                ],
+
+                'amount' => ['required', 'numeric', 'min:0.01'],
+                'month' => ['required', 'integer', 'between:1,12'],
+                'year' => ['required', 'integer', 'min:2000', 'max:2100'],
             ],
-            'amount' => ['required', 'numeric', 'min:0.01'],
-            'month' => ['required', 'integer', 'between:1,12'],
-            'year' => ['required', 'integer', 'min:2000', 'max:2100'],
-        ]);
+            [
+                'category_id.required' => 'Please select a category.',
+                'category_id.unique' => 'A budget for this category and period already exists.',
+                'amount.required' => 'Please enter a budget amount.',
+                'month.required' => 'Please enter a month.',
+                'year.required' => 'Please enter a year.',
+            ],
+        );
 
         $budget->update([
             'category_id' => $validated['category_id'],
